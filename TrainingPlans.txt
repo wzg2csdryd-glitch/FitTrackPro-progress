@@ -1,0 +1,6 @@
+P001#Beginner Strength#Full Body#Beginner#Focus on form before adding weight
+P002#Push Pull Legs#PPL#Intermediate#Six sessions per week with one rest day
+P003#Upper Lower Split#Upper Lower#Intermediate#Four sessions per week
+P004#Fat Loss Circuit#Full Body#Beginner#Short rest periods and higher repetitions
+P005#Advanced Hypertrophy#Bro Split#Advanced#High volume with progressive overload
+P006#Rehab and Mobility#Full Body#Beginner#Low impact movements for returning members

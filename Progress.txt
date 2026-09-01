@@ -1,0 +1,80 @@
+PR001#M001#2024-12-09#51.2#Waist 103cm Chest 117cm Arm 31cm#Improved consistency
+PR002#M001#2025-01-19#47.2#Waist 83cm Chest 111cm Arm 31cm#Good progress on compound lifts
+PR003#M002#2026-05-02#69.9#Waist 83cm Chest 115cm Arm 28cm#Struggling with attendance
+PR004#M002#2026-06-16#72.1#Waist 68cm Chest 85cm Arm 42cm#Sleeping better and training harder
+PR005#M003#2024-11-25#67.6#Waist 99cm Chest 85cm Arm 28cm#Plateau reached this month
+PR006#M003#2024-12-23#67.7#Waist 77cm Chest 117cm Arm 34cm#Recovering from minor injury
+PR007#M003#2025-02-05#69.5#Waist 79cm Chest 115cm Arm 42cm#Good progress on compound lifts
+PR008#M004#2025-12-10#65.2#Waist 85cm Chest 97cm Arm 28cm#Sleeping better and training harder
+PR009#M004#2026-01-19#65.3#Waist 96cm Chest 101cm Arm 39cm#Plateau reached this month
+PR010#M005#2026-03-01#80.4#Waist 96cm Chest 94cm Arm 28cm#Recovering from minor injury
+PR011#M005#2026-04-04#79.5#Waist 73cm Chest 107cm Arm 32cm#Recovering from minor injury
+PR012#M005#2026-05-08#78.9#Waist 87cm Chest 112cm Arm 38cm#Sleeping better and training harder
+PR013#M006#2025-02-20#70.8#Waist 104cm Chest 86cm Arm 32cm#Increased protein intake
+PR014#M006#2025-03-31#68.3#Waist 78cm Chest 88cm Arm 30cm#Plateau reached this month
+PR015#M007#2024-12-15#81.5#Waist 80cm Chest 91cm Arm 31cm#Recovering from minor injury
+PR016#M007#2025-01-24#80.3#Waist 99cm Chest 89cm Arm 37cm#Improved consistency
+PR017#M007#2025-02-26#79.6#Waist 76cm Chest 107cm Arm 30cm#Good progress on compound lifts
+PR018#M007#2025-03-31#76.6#Waist 71cm Chest 115cm Arm 35cm#Good progress on compound lifts
+PR019#M008#2025-12-16#67.8#Waist 99cm Chest 109cm Arm 32cm#Recovering from minor injury
+PR020#M008#2026-01-25#68.4#Waist 88cm Chest 93cm Arm 39cm#Improved consistency
+PR021#M008#2026-03-09#68.1#Waist 95cm Chest 100cm Arm 36cm#Improved consistency
+PR022#M009#2025-06-29#59.1#Waist 104cm Chest 111cm Arm 37cm#Recovering from minor injury
+PR023#M009#2025-07-29#55.8#Waist 89cm Chest 86cm Arm 26cm#Sleeping better and training harder
+PR024#M010#2026-01-02#67.8#Waist 83cm Chest 88cm Arm 37cm#Plateau reached this month
+PR025#M010#2026-02-07#68.1#Waist 70cm Chest 100cm Arm 26cm#Increased protein intake
+PR026#M010#2026-03-17#67.7#Waist 97cm Chest 116cm Arm 28cm#Energy levels much better
+PR027#M010#2026-04-23#67.9#Waist 94cm Chest 88cm Arm 26cm#Struggling with attendance
+PR028#M011#2025-02-18#70.3#Waist 86cm Chest 100cm Arm 35cm#Plateau reached this month
+PR029#M011#2025-03-21#65.3#Waist 72cm Chest 107cm Arm 29cm#Energy levels much better
+PR030#M012#2026-02-01#58.4#Waist 71cm Chest 94cm Arm 37cm#Recovering from minor injury
+PR031#M012#2026-03-12#59.2#Waist 104cm Chest 86cm Arm 31cm#Struggling with attendance
+PR032#M012#2026-04-16#59.8#Waist 103cm Chest 116cm Arm 27cm#Recovering from minor injury
+PR033#M013#2024-12-23#65.0#Waist 92cm Chest 112cm Arm 36cm#Struggling with attendance
+PR034#M013#2025-01-30#63.7#Waist 94cm Chest 117cm Arm 36cm#Recovering from minor injury
+PR035#M013#2025-03-01#63.0#Waist 77cm Chest 101cm Arm 40cm#Recovering from minor injury
+PR036#M013#2025-04-03#60.9#Waist 84cm Chest 116cm Arm 26cm#Energy levels much better
+PR037#M014#2026-01-24#59.8#Waist 95cm Chest 92cm Arm 36cm#Good progress on compound lifts
+PR038#M014#2026-03-01#60.2#Waist 102cm Chest 101cm Arm 36cm#Plateau reached this month
+PR039#M014#2026-04-14#59.5#Waist 72cm Chest 117cm Arm 39cm#Increased protein intake
+PR040#M014#2026-05-24#59.0#Waist 84cm Chest 85cm Arm 37cm#Plateau reached this month
+PR041#M015#2025-09-18#76.8#Waist 86cm Chest 94cm Arm 39cm#Plateau reached this month
+PR042#M015#2025-10-22#79.6#Waist 102cm Chest 91cm Arm 35cm#Increased protein intake
+PR043#M016#2025-06-29#64.5#Waist 82cm Chest 85cm Arm 41cm#Recovering from minor injury
+PR044#M016#2025-07-29#65.0#Waist 97cm Chest 112cm Arm 40cm#Plateau reached this month
+PR045#M017#2026-04-08#49.5#Waist 72cm Chest 118cm Arm 26cm#Recovering from minor injury
+PR046#M017#2026-05-23#48.0#Waist 85cm Chest 88cm Arm 42cm#Plateau reached this month
+PR047#M018#2026-01-26#86.3#Waist 95cm Chest 104cm Arm 39cm#Increased protein intake
+PR048#M018#2026-03-02#86.5#Waist 74cm Chest 101cm Arm 32cm#Energy levels much better
+PR049#M019#2025-01-12#89.0#Waist 90cm Chest 108cm Arm 40cm#Struggling with attendance
+PR050#M019#2025-02-21#90.1#Waist 99cm Chest 93cm Arm 34cm#Plateau reached this month
+PR051#M019#2025-03-24#90.6#Waist 93cm Chest 102cm Arm 28cm#Good progress on compound lifts
+PR052#M020#2025-12-06#72.7#Waist 76cm Chest 105cm Arm 26cm#Good progress on compound lifts
+PR053#M020#2026-01-03#69.6#Waist 91cm Chest 113cm Arm 40cm#Struggling with attendance
+PR054#M021#2025-06-09#69.9#Waist 75cm Chest 115cm Arm 40cm#Energy levels much better
+PR055#M021#2025-07-19#68.9#Waist 88cm Chest 115cm Arm 36cm#Plateau reached this month
+PR056#M021#2025-08-31#66.8#Waist 95cm Chest 84cm Arm 37cm#Energy levels much better
+PR057#M022#2024-10-11#81.1#Waist 99cm Chest 116cm Arm 36cm#Increased protein intake
+PR058#M022#2024-11-24#78.9#Waist 72cm Chest 109cm Arm 31cm#Recovering from minor injury
+PR059#M022#2025-01-04#75.6#Waist 87cm Chest 117cm Arm 40cm#Struggling with attendance
+PR060#M023#2026-01-20#82.8#Waist 80cm Chest 92cm Arm 26cm#Struggling with attendance
+PR061#M023#2026-03-03#82.4#Waist 104cm Chest 89cm Arm 40cm#Good progress on compound lifts
+PR062#M023#2026-04-06#82.6#Waist 76cm Chest 87cm Arm 32cm#Energy levels much better
+PR063#M024#2024-10-12#64.7#Waist 89cm Chest 103cm Arm 37cm#Sleeping better and training harder
+PR064#M024#2024-11-19#62.9#Waist 73cm Chest 85cm Arm 29cm#Plateau reached this month
+PR065#M024#2025-01-02#60.9#Waist 104cm Chest 95cm Arm 32cm#Increased protein intake
+PR066#M025#2025-04-03#60.9#Waist 85cm Chest 104cm Arm 29cm#Recovering from minor injury
+PR067#M025#2025-05-15#62.6#Waist 81cm Chest 104cm Arm 29cm#Struggling with attendance
+PR068#M026#2025-01-03#86.9#Waist 87cm Chest 114cm Arm 28cm#Recovering from minor injury
+PR069#M026#2025-02-06#87.6#Waist 97cm Chest 96cm Arm 30cm#Increased protein intake
+PR070#M026#2025-03-22#88.9#Waist 73cm Chest 94cm Arm 34cm#Energy levels much better
+PR071#M027#2026-03-24#61.2#Waist 82cm Chest 95cm Arm 40cm#Recovering from minor injury
+PR072#M027#2026-05-08#57.0#Waist 84cm Chest 84cm Arm 35cm#Increased protein intake
+PR073#M028#2026-07-10#69.4#Waist 81cm Chest 91cm Arm 35cm#Increased protein intake
+PR074#M028#2026-08-20#63.4#Waist 80cm Chest 105cm Arm 28cm#Increased protein intake
+PR075#M029#2026-03-21#70.4#Waist 88cm Chest 118cm Arm 38cm#Plateau reached this month
+PR076#M029#2026-04-21#70.9#Waist 78cm Chest 114cm Arm 28cm#Good progress on compound lifts
+PR077#M029#2026-05-29#71.6#Waist 91cm Chest 93cm Arm 26cm#Recovering from minor injury
+PR078#M029#2026-07-05#71.6#Waist 77cm Chest 109cm Arm 37cm#Struggling with attendance
+PR079#M030#2026-05-13#74.9#Waist 90cm Chest 87cm Arm 31cm#Sleeping better and training harder
+PR080#M030#2026-06-22#78.2#Waist 72cm Chest 87cm Arm 37cm#Good progress on compound lifts
