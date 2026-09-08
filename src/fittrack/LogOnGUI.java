@@ -42,30 +42,30 @@ public class LogOnGUI extends javax.swing.JFrame {
         setTitle("FitTrackPro-LogOn");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        txfUsername.setText("jTextField1");
-        getContentPane().add(txfUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 80, 30));
+        getContentPane().add(cmbUserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 150, 25));
 
-        pwfPassword.setText("jPasswordField1");
-        getContentPane().add(pwfPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
+        getContentPane().add(txfUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 45, 150, 25));
 
-        btnLogOn.setText("jButton1");
+        getContentPane().add(pwfPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 150, 25));
+
+        btnLogOn.setText("Log On");
         btnLogOn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOnActionPerformed(evt);
             }
         });
-        getContentPane().add(btnLogOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 100, 30));
+        getContentPane().add(btnLogOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 145, 100, 30));
 
-        lblError.setText("jLabel1");
-        getContentPane().add(lblError, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 40, 20));
+        lblError.setText(" ");
+        getContentPane().add(lblError, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 115, 250, 20));
 
-        btnHelp.setText("jButton1");
+        btnHelp.setText("Help");
         btnHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHelpActionPerformed(evt);
             }
         });
-        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, -1, -1));
+        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 145, 100, 30));
 
         pack();
         setLocationRelativeTo(null);
