@@ -4,9 +4,6 @@
  */
 package fittrack;
 
-import fittrack.Manager;
-import fittrack.User;
-
 /**
  *
  * @author henni
@@ -29,11 +26,15 @@ public class LogOnGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblHeading = new javax.swing.JLabel();
+        lblUserTypeLabel = new javax.swing.JLabel();
         cmbUserType = new javax.swing.JComboBox<>();
+        lblUsernameLabel = new javax.swing.JLabel();
         txfUsername = new javax.swing.JTextField();
+        lblPasswordLabel = new javax.swing.JLabel();
         pwfPassword = new javax.swing.JPasswordField();
-        btnLogOn = new javax.swing.JButton();
         lblError = new javax.swing.JLabel();
+        btnLogOn = new javax.swing.JButton();
         btnHelp = new javax.swing.JButton();
 
         cmbUserType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrator", "Member" }));
@@ -41,31 +42,61 @@ public class LogOnGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FitTrackPro-LogOn");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setBackground(Theme.BACKGROUND);
 
-        getContentPane().add(cmbUserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 150, 25));
+        lblHeading.setText("Log On");
+        lblHeading.setFont(Theme.HEADING_FONT);
+        lblHeading.setForeground(Theme.ACCENT_DARK_BLUE);
+        getContentPane().add(lblHeading, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 200, 30));
 
-        getContentPane().add(txfUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 45, 150, 25));
+        lblUserTypeLabel.setText("User Type:");
+        lblUserTypeLabel.setFont(Theme.LABEL_FONT);
+        getContentPane().add(lblUserTypeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 150, 18));
 
-        getContentPane().add(pwfPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 150, 25));
+        getContentPane().add(cmbUserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 180, 25));
+
+        lblUsernameLabel.setText("Username:");
+        lblUsernameLabel.setFont(Theme.LABEL_FONT);
+        getContentPane().add(lblUsernameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 105, 150, 18));
+
+        getContentPane().add(txfUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 125, 180, 25));
+
+        lblPasswordLabel.setText("Password:");
+        lblPasswordLabel.setFont(Theme.LABEL_FONT);
+        getContentPane().add(lblPasswordLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 150, 18));
+
+        getContentPane().add(pwfPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 180, 25));
+
+        lblError.setText(" ");
+        lblError.setFont(Theme.MESSAGE_FONT);
+        lblError.setForeground(Theme.ERROR_RED);
+        getContentPane().add(lblError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 212, 280, 20));
 
         btnLogOn.setText("Log On");
+        btnLogOn.setFont(Theme.BUTTON_FONT);
+        btnLogOn.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnLogOn.setForeground(java.awt.Color.WHITE);
+        btnLogOn.setOpaque(true);
+        btnLogOn.setBorderPainted(false);
         btnLogOn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOnActionPerformed(evt);
             }
         });
-        getContentPane().add(btnLogOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 145, 100, 30));
-
-        lblError.setText(" ");
-        getContentPane().add(lblError, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 115, 250, 20));
+        getContentPane().add(btnLogOn, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 100, 30));
 
         btnHelp.setText("Help");
+        btnHelp.setFont(Theme.BUTTON_FONT);
+        btnHelp.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnHelp.setForeground(java.awt.Color.WHITE);
+        btnHelp.setOpaque(true);
+        btnHelp.setBorderPainted(false);
         btnHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHelpActionPerformed(evt);
             }
         });
-        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 145, 100, 30));
+        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 240, 90, 30));
 
         pack();
         setLocationRelativeTo(null);
@@ -132,7 +163,7 @@ private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -165,6 +196,10 @@ private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JButton btnLogOn;
     private javax.swing.JComboBox<String> cmbUserType;
     private javax.swing.JLabel lblError;
+    private javax.swing.JLabel lblHeading;
+    private javax.swing.JLabel lblPasswordLabel;
+    private javax.swing.JLabel lblUserTypeLabel;
+    private javax.swing.JLabel lblUsernameLabel;
     private javax.swing.JPasswordField pwfPassword;
     private javax.swing.JTextField txfUsername;
     // End of variables declaration//GEN-END:variables

@@ -57,6 +57,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setBackground(Theme.BACKGROUND);
 
         txaMembers.setEditable(false);
         txaMembers.setColumns(20);
@@ -66,6 +67,11 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel1.add(scrMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 560, 350));
 
         btnSortMembers.setText("Sort by Surname");
+        btnSortMembers.setFont(Theme.BUTTON_FONT);
+        btnSortMembers.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnSortMembers.setForeground(java.awt.Color.WHITE);
+        btnSortMembers.setOpaque(true);
+        btnSortMembers.setBorderPainted(false);
         btnSortMembers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSortMembersActionPerformed(evt);
@@ -76,6 +82,7 @@ public class MainGUI extends javax.swing.JFrame {
         tabMain.addTab("Members", jPanel1);
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel2.setBackground(Theme.BACKGROUND);
 
         txaMemberships.setEditable(false);
         txaMemberships.setColumns(20);
@@ -85,6 +92,11 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel2.add(scrMemberships, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 560, 350));
 
         btnSortMemberships.setText("Sort by End Date");
+        btnSortMemberships.setFont(Theme.BUTTON_FONT);
+        btnSortMemberships.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnSortMemberships.setForeground(java.awt.Color.WHITE);
+        btnSortMemberships.setOpaque(true);
+        btnSortMemberships.setBorderPainted(false);
         btnSortMemberships.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSortMembershipsActionPerformed(evt);
@@ -95,18 +107,23 @@ public class MainGUI extends javax.swing.JFrame {
         tabMain.addTab("Memberships", jPanel2);
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel3.setBackground(Theme.BACKGROUND);
         tabMain.addTab("Attendance", jPanel3);
 
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel4.setBackground(Theme.BACKGROUND);
         tabMain.addTab("Training Plans", jPanel4);
 
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel5.setBackground(Theme.BACKGROUND);
         tabMain.addTab("Progress", jPanel5);
 
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel6.setBackground(Theme.BACKGROUND);
         tabMain.addTab("Reports", jPanel6);
 
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel7.setBackground(Theme.BACKGROUND);
         tabMain.addTab("Help", jPanel7);
 
         getContentPane().setLayout(new java.awt.BorderLayout());
