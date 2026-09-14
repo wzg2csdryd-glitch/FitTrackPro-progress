@@ -10,6 +10,8 @@ package fittrack;
  */
 public class MainGUI extends javax.swing.JFrame {
 
+    private int memberIndex = 0;
+
     /**
      * Creates new form MainGUI
      */
@@ -38,6 +40,19 @@ public class MainGUI extends javax.swing.JFrame {
         scrMembers = new javax.swing.JScrollPane();
         txaMembers = new javax.swing.JTextArea();
         btnSortMembers = new javax.swing.JButton();
+        txfMemberID = new javax.swing.JTextField();
+        txfMemberName = new javax.swing.JTextField();
+        txfMemberSurname = new javax.swing.JTextField();
+        txfMemberContact = new javax.swing.JTextField();
+        txfMemberJoinDate = new javax.swing.JTextField();
+        txfMemberHeight = new javax.swing.JTextField();
+        txfMemberCurrentWeight = new javax.swing.JTextField();
+        txfMemberBMI = new javax.swing.JTextField();
+        txfMemberFitnessGoal = new javax.swing.JTextField();
+        btnFirstMember = new javax.swing.JButton();
+        btnPrevMember = new javax.swing.JButton();
+        btnNextMember = new javax.swing.JButton();
+        btnLastMember = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         scrMemberships = new javax.swing.JScrollPane();
         txaMemberships = new javax.swing.JTextArea();
@@ -64,7 +79,7 @@ public class MainGUI extends javax.swing.JFrame {
         txaMembers.setRows(5);
         scrMembers.setViewportView(txaMembers);
 
-        jPanel1.add(scrMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 560, 350));
+        jPanel1.add(scrMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 560, 140));
 
         btnSortMembers.setText("Sort by Surname");
         btnSortMembers.setFont(Theme.BUTTON_FONT);
@@ -77,7 +92,112 @@ public class MainGUI extends javax.swing.JFrame {
                 btnSortMembersActionPerformed(evt);
             }
         });
-        jPanel1.add(btnSortMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 150, 30));
+        jPanel1.add(btnSortMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 155, 150, 28));
+
+        javax.swing.JLabel lblMemberIDLabel = new javax.swing.JLabel("Member ID:");
+        lblMemberIDLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberIDLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 195, 100, 18));
+        txfMemberID.setEditable(false);
+        jPanel1.add(txfMemberID, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 195, 170, 22));
+
+        javax.swing.JLabel lblMemberNameLabel = new javax.swing.JLabel("Name:");
+        lblMemberNameLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberNameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 221, 100, 18));
+        jPanel1.add(txfMemberName, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 221, 170, 22));
+
+        javax.swing.JLabel lblMemberSurnameLabel = new javax.swing.JLabel("Surname:");
+        lblMemberSurnameLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberSurnameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 247, 100, 18));
+        jPanel1.add(txfMemberSurname, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 247, 170, 22));
+
+        javax.swing.JLabel lblMemberContactLabel = new javax.swing.JLabel("Contact:");
+        lblMemberContactLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberContactLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 273, 100, 18));
+        jPanel1.add(txfMemberContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 273, 170, 22));
+
+        javax.swing.JLabel lblMemberJoinDateLabel = new javax.swing.JLabel("Join Date:");
+        lblMemberJoinDateLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberJoinDateLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 299, 100, 18));
+        txfMemberJoinDate.setEditable(false);
+        jPanel1.add(txfMemberJoinDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 299, 170, 22));
+
+        javax.swing.JLabel lblMemberHeightLabel = new javax.swing.JLabel("Height (m):");
+        lblMemberHeightLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberHeightLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 195, 100, 18));
+        jPanel1.add(txfMemberHeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 195, 160, 22));
+
+        javax.swing.JLabel lblMemberCurrentWeightLabel = new javax.swing.JLabel("Current Weight (kg):");
+        lblMemberCurrentWeightLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberCurrentWeightLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 221, 100, 18));
+        jPanel1.add(txfMemberCurrentWeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 221, 160, 22));
+
+        javax.swing.JLabel lblMemberBMILabel = new javax.swing.JLabel("BMI:");
+        lblMemberBMILabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberBMILabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 247, 100, 18));
+        txfMemberBMI.setEditable(false);
+        jPanel1.add(txfMemberBMI, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 247, 160, 22));
+
+        javax.swing.JLabel lblMemberFitnessGoalLabel = new javax.swing.JLabel("Fitness Goal:");
+        lblMemberFitnessGoalLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberFitnessGoalLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 273, 100, 18));
+        jPanel1.add(txfMemberFitnessGoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 273, 160, 22));
+
+        javax.swing.JPanel pnlMemberNav = new javax.swing.JPanel();
+        pnlMemberNav.setBackground(Theme.BACKGROUND);
+
+        btnFirstMember.setText("<<");
+        btnFirstMember.setFont(Theme.BUTTON_FONT);
+        btnFirstMember.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnFirstMember.setForeground(java.awt.Color.WHITE);
+        btnFirstMember.setOpaque(true);
+        btnFirstMember.setBorderPainted(false);
+        btnFirstMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFirstMemberActionPerformed(evt);
+            }
+        });
+        pnlMemberNav.add(btnFirstMember);
+
+        btnPrevMember.setText("<");
+        btnPrevMember.setFont(Theme.BUTTON_FONT);
+        btnPrevMember.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnPrevMember.setForeground(java.awt.Color.WHITE);
+        btnPrevMember.setOpaque(true);
+        btnPrevMember.setBorderPainted(false);
+        btnPrevMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrevMemberActionPerformed(evt);
+            }
+        });
+        pnlMemberNav.add(btnPrevMember);
+
+        btnNextMember.setText(">");
+        btnNextMember.setFont(Theme.BUTTON_FONT);
+        btnNextMember.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnNextMember.setForeground(java.awt.Color.WHITE);
+        btnNextMember.setOpaque(true);
+        btnNextMember.setBorderPainted(false);
+        btnNextMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextMemberActionPerformed(evt);
+            }
+        });
+        pnlMemberNav.add(btnNextMember);
+
+        btnLastMember.setText(">>");
+        btnLastMember.setFont(Theme.BUTTON_FONT);
+        btnLastMember.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnLastMember.setForeground(java.awt.Color.WHITE);
+        btnLastMember.setOpaque(true);
+        btnLastMember.setBorderPainted(false);
+        btnLastMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLastMemberActionPerformed(evt);
+            }
+        });
+        pnlMemberNav.add(btnLastMember);
+
+        jPanel1.add(pnlMemberNav, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 300, 40));
 
         tabMain.addTab("Members", jPanel1);
 
@@ -139,6 +259,8 @@ public class MainGUI extends javax.swing.JFrame {
 
         txaMembers.setText(Manager.memberArray.toString());
         txaMemberships.setText(Manager.membershipArray.toString());
+
+        updateMemberFields(memberIndex);
     }
 
     private void btnSortMembersActionPerformed(java.awt.event.ActionEvent evt) {
@@ -149,6 +271,43 @@ public class MainGUI extends javax.swing.JFrame {
     private void btnSortMembershipsActionPerformed(java.awt.event.ActionEvent evt) {
         Manager.membershipArray.sortByEndDate();
         txaMemberships.setText(Manager.membershipArray.toString());
+    }
+
+    private void updateMemberFields(int pos) {
+        Member m = Manager.memberArray.getMember(pos);
+        txfMemberID.setText(m.getMemberID());
+        txfMemberName.setText(m.getName());
+        txfMemberSurname.setText(m.getSurname());
+        txfMemberContact.setText(m.getContactDetails());
+        txfMemberJoinDate.setText(m.getJoinDate().toString());
+        txfMemberHeight.setText(String.valueOf(m.getHeight()));
+        txfMemberCurrentWeight.setText(String.valueOf(m.getCurrentWeight()));
+        txfMemberBMI.setText(String.valueOf(m.getBmi()));
+        txfMemberFitnessGoal.setText(m.getFitnessGoal());
+    }
+
+    private void btnFirstMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        memberIndex = 0;
+        updateMemberFields(memberIndex);
+    }
+
+    private void btnPrevMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        if (memberIndex > 0) {
+            memberIndex--;
+            updateMemberFields(memberIndex);
+        }
+    }
+
+    private void btnNextMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        if (memberIndex < Manager.memberArray.getSize() - 1) {
+            memberIndex++;
+            updateMemberFields(memberIndex);
+        }
+    }
+
+    private void btnLastMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        memberIndex = Manager.memberArray.getSize() - 1;
+        updateMemberFields(memberIndex);
     }
 
     /**
@@ -187,8 +346,21 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnFirstMember;
+    private javax.swing.JButton btnLastMember;
+    private javax.swing.JButton btnNextMember;
+    private javax.swing.JButton btnPrevMember;
     private javax.swing.JButton btnSortMemberships;
     private javax.swing.JButton btnSortMembers;
+    private javax.swing.JTextField txfMemberID;
+    private javax.swing.JTextField txfMemberName;
+    private javax.swing.JTextField txfMemberSurname;
+    private javax.swing.JTextField txfMemberContact;
+    private javax.swing.JTextField txfMemberJoinDate;
+    private javax.swing.JTextField txfMemberHeight;
+    private javax.swing.JTextField txfMemberCurrentWeight;
+    private javax.swing.JTextField txfMemberBMI;
+    private javax.swing.JTextField txfMemberFitnessGoal;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
