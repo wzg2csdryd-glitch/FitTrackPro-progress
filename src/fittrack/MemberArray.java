@@ -90,6 +90,16 @@ public int getSize() {
     return size;
 }
 
+public String generateNextMemberID() {
+    String lastID = memberArray[size - 1].getMemberID();
+    return Tools.generateNextID("M", lastID);
+}
+
+public void addMember(Member member) {
+    memberArray[size] = member;
+    size++;
+}
+
 public void saveToFile() {
     try {
         PrintWriter output = new PrintWriter(new File("Members.txt"));

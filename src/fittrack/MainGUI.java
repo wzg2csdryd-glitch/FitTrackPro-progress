@@ -52,6 +52,7 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberCurrentWeight = new javax.swing.JTextField();
         txfMemberBMI = new javax.swing.JTextField();
         txfMemberFitnessGoal = new javax.swing.JTextField();
+        btnAddMember = new javax.swing.JButton();
         btnSaveContact = new javax.swing.JButton();
         lblEditMemberStatus = new javax.swing.JLabel();
         lblMemberActiveStatus = new javax.swing.JLabel();
@@ -119,6 +120,19 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnSortMembers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 155, 150, 28));
+
+        btnAddMember.setText("Add Member");
+        btnAddMember.setFont(Theme.BUTTON_FONT);
+        btnAddMember.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnAddMember.setForeground(java.awt.Color.WHITE);
+        btnAddMember.setOpaque(true);
+        btnAddMember.setBorderPainted(false);
+        btnAddMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddMemberActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAddMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 155, 120, 28));
 
         javax.swing.JLabel lblMemberIDLabel = new javax.swing.JLabel("Member ID:");
         lblMemberIDLabel.setFont(Theme.LABEL_FONT);
@@ -579,6 +593,152 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
+    private void btnAddMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        showAddMemberDialog();
+    }
+
+    private void showAddMemberDialog() {
+        final javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Add Member", true);
+        dialog.setLayout(new java.awt.BorderLayout(10, 10));
+
+        javax.swing.JPanel fieldsPanel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 8, 8));
+
+        final javax.swing.JTextField fldName = new javax.swing.JTextField();
+        final javax.swing.JTextField fldSurname = new javax.swing.JTextField();
+        final javax.swing.JTextField fldDateOfBirth = new javax.swing.JTextField();
+        final javax.swing.JTextField fldContact = new javax.swing.JTextField();
+        final javax.swing.JTextField fldHeight = new javax.swing.JTextField();
+        final javax.swing.JTextField fldStartingWeight = new javax.swing.JTextField();
+        final javax.swing.JTextField fldFitnessGoal = new javax.swing.JTextField();
+        final javax.swing.JComboBox<String> fldPlan = new javax.swing.JComboBox<>();
+        fldPlan.addItem("Select option");
+        for (int i = 0; i < Manager.trainingPlanArray.getSize(); i++) {
+            fldPlan.addItem(Manager.trainingPlanArray.getTrainingPlan(i).getPlanName());
+        }
+
+        fieldsPanel.add(new javax.swing.JLabel("Name:"));
+        fieldsPanel.add(fldName);
+        fieldsPanel.add(new javax.swing.JLabel("Surname:"));
+        fieldsPanel.add(fldSurname);
+        fieldsPanel.add(new javax.swing.JLabel("Date of Birth (yyyy-mm-dd):"));
+        fieldsPanel.add(fldDateOfBirth);
+        fieldsPanel.add(new javax.swing.JLabel("Contact:"));
+        fieldsPanel.add(fldContact);
+        fieldsPanel.add(new javax.swing.JLabel("Height (m):"));
+        fieldsPanel.add(fldHeight);
+        fieldsPanel.add(new javax.swing.JLabel("Starting Weight (kg):"));
+        fieldsPanel.add(fldStartingWeight);
+        fieldsPanel.add(new javax.swing.JLabel("Fitness Goal:"));
+        fieldsPanel.add(fldFitnessGoal);
+        fieldsPanel.add(new javax.swing.JLabel("Assigned Plan:"));
+        fieldsPanel.add(fldPlan);
+
+        dialog.add(fieldsPanel, java.awt.BorderLayout.CENTER);
+
+        final javax.swing.JLabel lblDialogStatus = new javax.swing.JLabel(" ");
+        lblDialogStatus.setFont(Theme.MESSAGE_FONT);
+
+        javax.swing.JButton btnCreate = new javax.swing.JButton("Create");
+        btnCreate.setFont(Theme.BUTTON_FONT);
+        btnCreate.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnCreate.setForeground(java.awt.Color.WHITE);
+        btnCreate.setOpaque(true);
+        btnCreate.setBorderPainted(false);
+
+        javax.swing.JButton btnCancel = new javax.swing.JButton("Cancel");
+
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                String name = fldName.getText().trim();
+                String surname = fldSurname.getText().trim();
+                String contact = fldContact.getText().trim();
+                String fitnessGoal = fldFitnessGoal.getText().trim();
+
+                if (name.isEmpty() || surname.isEmpty() || contact.isEmpty() || fitnessGoal.isEmpty()) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("All fields are required.");
+                    return;
+                }
+                if (contact.contains("#") || contact.contains(";")) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Contact cannot contain # or ;");
+                    return;
+                }
+
+                java.time.LocalDate dateOfBirth;
+                try {
+                    dateOfBirth = java.time.LocalDate.parse(fldDateOfBirth.getText().trim());
+                } catch (java.time.format.DateTimeParseException e) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Date of birth must be in yyyy-mm-dd format.");
+                    return;
+                }
+
+                double height;
+                double startingWeight;
+                try {
+                    height = Double.parseDouble(fldHeight.getText().trim());
+                    startingWeight = Double.parseDouble(fldStartingWeight.getText().trim());
+                } catch (NumberFormatException e) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Height and starting weight must be numbers.");
+                    return;
+                }
+                if (height <= 0) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Height must be greater than zero.");
+                    return;
+                }
+
+                int planIndex = fldPlan.getSelectedIndex();
+                if (planIndex <= 0) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Select a training plan.");
+                    return;
+                }
+                String assignedPlanID = Manager.trainingPlanArray.getTrainingPlan(planIndex - 1).getPlanID();
+
+                String newID = Manager.memberArray.generateNextMemberID();
+                double bmi = startingWeight / (height * height);
+
+                Member newMember = new Member(newID, name, surname, dateOfBirth, contact,
+                        java.time.LocalDate.now(), true, height, startingWeight, startingWeight,
+                        bmi, fitnessGoal, assignedPlanID, "");
+
+                Manager.memberArray.addMember(newMember);
+                Manager.memberArray.saveToFile();
+
+                txaMembers.setText(Manager.memberArray.toString());
+                memberIndex = Manager.memberArray.getSize() - 1;
+                updateMemberFields(memberIndex);
+
+                lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+                lblEditMemberStatus.setText("Added new member " + newMember.getFullName() + " (" + newID + ").");
+
+                dialog.dispose();
+            }
+        });
+
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dialog.dispose();
+            }
+        });
+
+        javax.swing.JPanel buttonRow = new javax.swing.JPanel();
+        buttonRow.add(btnCreate);
+        buttonRow.add(btnCancel);
+
+        javax.swing.JPanel bottomPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        bottomPanel.add(lblDialogStatus, java.awt.BorderLayout.NORTH);
+        bottomPanel.add(buttonRow, java.awt.BorderLayout.SOUTH);
+        dialog.add(bottomPanel, java.awt.BorderLayout.SOUTH);
+
+        dialog.setSize(420, 340);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
     private void btnToggleActiveActionPerformed(java.awt.event.ActionEvent evt) {
         Member m = Manager.memberArray.getMember(memberIndex);
         m.setActiveStatus(!m.isActiveStatus());
@@ -831,6 +991,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txfMemberCurrentWeight;
     private javax.swing.JTextField txfMemberBMI;
     private javax.swing.JTextField txfMemberFitnessGoal;
+    private javax.swing.JButton btnAddMember;
     private javax.swing.JButton btnSaveContact;
     private javax.swing.JLabel lblEditMemberStatus;
     private javax.swing.JLabel lblMemberActiveStatus;
