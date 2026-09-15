@@ -53,6 +53,13 @@ public class MainGUI extends javax.swing.JFrame {
         btnPrevMember = new javax.swing.JButton();
         btnNextMember = new javax.swing.JButton();
         btnLastMember = new javax.swing.JButton();
+        cmbAttendanceMember = new javax.swing.JComboBox<>();
+        lblAttendanceMemberID = new javax.swing.JLabel();
+        cmbProgressMember = new javax.swing.JComboBox<>();
+        lblProgressMemberID = new javax.swing.JLabel();
+        cmbTrainingPlan = new javax.swing.JComboBox<>();
+        lblTrainingPlanID = new javax.swing.JLabel();
+        lblPlanBadge = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         scrMemberships = new javax.swing.JScrollPane();
         txaMemberships = new javax.swing.JTextArea();
@@ -228,14 +235,80 @@ public class MainGUI extends javax.swing.JFrame {
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanel3.setBackground(Theme.BACKGROUND);
+
+        javax.swing.JLabel lblSelectMemberAttendance = new javax.swing.JLabel("Select Member:");
+        lblSelectMemberAttendance.setFont(Theme.LABEL_FONT);
+        jPanel3.add(lblSelectMemberAttendance, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, 150, 18));
+
+        cmbAttendanceMember.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cmbAttendanceMemberFocusGained(evt);
+            }
+        });
+        cmbAttendanceMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbAttendanceMemberActionPerformed(evt);
+            }
+        });
+        jPanel3.add(cmbAttendanceMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 37, 250, 25));
+
+        lblAttendanceMemberID.setText("Member ID: ---");
+        lblAttendanceMemberID.setFont(Theme.LABEL_FONT);
+        jPanel3.add(lblAttendanceMemberID, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 67, 250, 20));
+
         tabMain.addTab("Attendance", jPanel3);
 
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanel4.setBackground(Theme.BACKGROUND);
+
+        javax.swing.JLabel lblSelectPlan = new javax.swing.JLabel("Select Plan:");
+        lblSelectPlan.setFont(Theme.LABEL_FONT);
+        jPanel4.add(lblSelectPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, 150, 18));
+
+        cmbTrainingPlan.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cmbTrainingPlanFocusGained(evt);
+            }
+        });
+        cmbTrainingPlan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbTrainingPlanActionPerformed(evt);
+            }
+        });
+        jPanel4.add(cmbTrainingPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 37, 250, 25));
+
+        lblTrainingPlanID.setText("Plan ID: ---");
+        lblTrainingPlanID.setFont(Theme.LABEL_FONT);
+        jPanel4.add(lblTrainingPlanID, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 67, 250, 20));
+
+        lblPlanBadge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel4.add(lblPlanBadge, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 95, 140, 60));
+
         tabMain.addTab("Training Plans", jPanel4);
 
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanel5.setBackground(Theme.BACKGROUND);
+
+        javax.swing.JLabel lblSelectMemberProgress = new javax.swing.JLabel("Select Member:");
+        lblSelectMemberProgress.setFont(Theme.LABEL_FONT);
+        jPanel5.add(lblSelectMemberProgress, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, 150, 18));
+
+        cmbProgressMember.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cmbProgressMemberFocusGained(evt);
+            }
+        });
+        cmbProgressMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbProgressMemberActionPerformed(evt);
+            }
+        });
+        jPanel5.add(cmbProgressMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 37, 250, 25));
+
+        lblProgressMemberID.setText("Member ID: ---");
+        lblProgressMemberID.setFont(Theme.LABEL_FONT);
+        jPanel5.add(lblProgressMemberID, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 67, 250, 20));
+
         tabMain.addTab("Progress", jPanel5);
 
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -261,6 +334,10 @@ public class MainGUI extends javax.swing.JFrame {
         txaMemberships.setText(Manager.membershipArray.toString());
 
         updateMemberFields(memberIndex);
+
+        populateAttendanceMemberCombo();
+        populateProgressMemberCombo();
+        populateTrainingPlanCombo();
     }
 
     private void btnSortMembersActionPerformed(java.awt.event.ActionEvent evt) {
@@ -308,6 +385,89 @@ public class MainGUI extends javax.swing.JFrame {
     private void btnLastMemberActionPerformed(java.awt.event.ActionEvent evt) {
         memberIndex = Manager.memberArray.getSize() - 1;
         updateMemberFields(memberIndex);
+    }
+
+    private void cmbAttendanceMemberFocusGained(java.awt.event.FocusEvent evt) {
+        populateAttendanceMemberCombo();
+    }
+
+    private void populateAttendanceMemberCombo() {
+        cmbAttendanceMember.removeAllItems();
+        cmbAttendanceMember.addItem("Select option");
+        for (int i = 0; i < Manager.memberArray.getSize(); i++) {
+            cmbAttendanceMember.addItem(Manager.memberArray.getMember(i).getFullName());
+        }
+    }
+
+    private void cmbAttendanceMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        int index = cmbAttendanceMember.getSelectedIndex();
+        if (index <= 0) {
+            lblAttendanceMemberID.setText("Member ID: ---");
+            return;
+        }
+        Member m = Manager.memberArray.getMember(index - 1);
+        lblAttendanceMemberID.setText("Member ID: " + m.getMemberID());
+    }
+
+    private void cmbProgressMemberFocusGained(java.awt.event.FocusEvent evt) {
+        populateProgressMemberCombo();
+    }
+
+    private void populateProgressMemberCombo() {
+        cmbProgressMember.removeAllItems();
+        cmbProgressMember.addItem("Select option");
+        for (int i = 0; i < Manager.memberArray.getSize(); i++) {
+            cmbProgressMember.addItem(Manager.memberArray.getMember(i).getFullName());
+        }
+    }
+
+    private void cmbProgressMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        int index = cmbProgressMember.getSelectedIndex();
+        if (index <= 0) {
+            lblProgressMemberID.setText("Member ID: ---");
+            return;
+        }
+        Member m = Manager.memberArray.getMember(index - 1);
+        lblProgressMemberID.setText("Member ID: " + m.getMemberID());
+    }
+
+    private void cmbTrainingPlanFocusGained(java.awt.event.FocusEvent evt) {
+        populateTrainingPlanCombo();
+    }
+
+    private void populateTrainingPlanCombo() {
+        cmbTrainingPlan.removeAllItems();
+        cmbTrainingPlan.addItem("Select option");
+        for (int i = 0; i < Manager.trainingPlanArray.getSize(); i++) {
+            cmbTrainingPlan.addItem(Manager.trainingPlanArray.getTrainingPlan(i).getPlanName());
+        }
+    }
+
+    private void cmbTrainingPlanActionPerformed(java.awt.event.ActionEvent evt) {
+        int index = cmbTrainingPlan.getSelectedIndex();
+        if (index <= 0) {
+            lblTrainingPlanID.setText("Plan ID: ---");
+            lblPlanBadge.setIcon(null);
+            return;
+        }
+        TrainingPlan p = Manager.trainingPlanArray.getTrainingPlan(index - 1);
+        lblTrainingPlanID.setText("Plan ID: " + p.getPlanID());
+        updatePlanBadge(p.getDifficulty());
+    }
+
+    private void updatePlanBadge(String difficulty) {
+        String filename;
+        if (difficulty.equals("Beginner")) {
+            filename = "/images/beginner.png";
+        } else if (difficulty.equals("Intermediate")) {
+            filename = "/images/intermediate.png";
+        } else {
+            filename = "/images/advanced.png";
+        }
+        java.net.URL imgURL = getClass().getResource(filename);
+        if (imgURL != null) {
+            lblPlanBadge.setIcon(new javax.swing.ImageIcon(imgURL));
+        }
     }
 
     /**
@@ -361,6 +521,13 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txfMemberCurrentWeight;
     private javax.swing.JTextField txfMemberBMI;
     private javax.swing.JTextField txfMemberFitnessGoal;
+    private javax.swing.JComboBox<String> cmbAttendanceMember;
+    private javax.swing.JLabel lblAttendanceMemberID;
+    private javax.swing.JComboBox<String> cmbProgressMember;
+    private javax.swing.JLabel lblProgressMemberID;
+    private javax.swing.JComboBox<String> cmbTrainingPlan;
+    private javax.swing.JLabel lblTrainingPlanID;
+    private javax.swing.JLabel lblPlanBadge;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
