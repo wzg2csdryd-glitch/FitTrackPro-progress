@@ -6,6 +6,7 @@ package fittrack;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -87,5 +88,22 @@ public Member getMember(int index) {
 
 public int getSize() {
     return size;
+}
+
+public void saveToFile() {
+    try {
+        PrintWriter output = new PrintWriter(new File("Members.txt"));
+        for (int i = 0; i < size; i++) {
+            Member m = memberArray[i];
+            output.println(m.getMemberID() + "#" + m.getName() + "#" + m.getSurname() + "#"
+                    + m.getDateOfBirth() + "#" + m.getContactDetails() + "#" + m.getJoinDate() + "#"
+                    + m.isActiveStatus() + "#" + m.getHeight() + "#" + m.getStartingWeight() + "#"
+                    + m.getCurrentWeight() + "#" + m.getBmi() + "#" + m.getFitnessGoal() + "#"
+                    + m.getAssignedPlanID() + "#" + m.getMembershipList());
+        }
+        output.close();
+    } catch (java.io.FileNotFoundException e) {
+        System.out.println("Could not write to Members.txt");
+    }
 }
 }

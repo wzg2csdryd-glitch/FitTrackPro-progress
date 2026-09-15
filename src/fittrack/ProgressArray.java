@@ -6,6 +6,7 @@ package fittrack;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -76,5 +77,29 @@ public class ProgressArray {
 
     public int getSize() {
         return size;
+    }
+
+    public String generateNextProgressID() {
+        String lastID = progressArray[size - 1].getProgressID();
+        return Tools.generateNextID("PR", lastID);
+    }
+
+    public void addRecord(ProgressRecord record) {
+        progressArray[size] = record;
+        size++;
+    }
+
+    public void saveToFile() {
+        try {
+            PrintWriter output = new PrintWriter(new File("Progress.txt"));
+            for (int i = 0; i < size; i++) {
+                ProgressRecord p = progressArray[i];
+                output.println(p.getProgressID() + "#" + p.getMemberID() + "#" + p.getDateRecorded()
+                        + "#" + p.getBodyWeight() + "#" + p.getMeasurements() + "#" + p.getNotes());
+            }
+            output.close();
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("Could not write to Progress.txt");
+        }
     }
 }

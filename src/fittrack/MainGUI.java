@@ -12,6 +12,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     private int memberIndex = 0;
     private int selectedAttendanceMemberIndex = -1;
+    private int selectedProgressMemberIndex = -1;
 
     /**
      * Creates new form MainGUI
@@ -60,6 +61,11 @@ public class MainGUI extends javax.swing.JFrame {
         lblCheckInStatus = new javax.swing.JLabel();
         cmbProgressMember = new javax.swing.JComboBox<>();
         lblProgressMemberID = new javax.swing.JLabel();
+        txfBodyWeight = new javax.swing.JTextField();
+        txfMeasurements = new javax.swing.JTextField();
+        txfProgressNotes = new javax.swing.JTextField();
+        btnRecordProgress = new javax.swing.JButton();
+        lblProgressStatus = new javax.swing.JLabel();
         cmbTrainingPlan = new javax.swing.JComboBox<>();
         lblTrainingPlanID = new javax.swing.JLabel();
         lblPlanBadge = new javax.swing.JLabel();
@@ -329,6 +335,38 @@ public class MainGUI extends javax.swing.JFrame {
         lblProgressMemberID.setFont(Theme.LABEL_FONT);
         jPanel5.add(lblProgressMemberID, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 67, 250, 20));
 
+        javax.swing.JLabel lblBodyWeight = new javax.swing.JLabel("Body Weight (kg):");
+        lblBodyWeight.setFont(Theme.LABEL_FONT);
+        jPanel5.add(lblBodyWeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 150, 18));
+        jPanel5.add(txfBodyWeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, 100, 22));
+
+        javax.swing.JLabel lblMeasurements = new javax.swing.JLabel("Measurements:");
+        lblMeasurements.setFont(Theme.LABEL_FONT);
+        jPanel5.add(lblMeasurements, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 150, 18));
+        jPanel5.add(txfMeasurements, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 130, 250, 22));
+
+        javax.swing.JLabel lblProgressNotes = new javax.swing.JLabel("Notes:");
+        lblProgressNotes.setFont(Theme.LABEL_FONT);
+        jPanel5.add(lblProgressNotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 150, 18));
+        jPanel5.add(txfProgressNotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 160, 250, 22));
+
+        btnRecordProgress.setText("Record Progress");
+        btnRecordProgress.setFont(Theme.BUTTON_FONT);
+        btnRecordProgress.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnRecordProgress.setForeground(java.awt.Color.WHITE);
+        btnRecordProgress.setOpaque(true);
+        btnRecordProgress.setBorderPainted(false);
+        btnRecordProgress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecordProgressActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnRecordProgress, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 195, 150, 30));
+
+        lblProgressStatus.setText(" ");
+        lblProgressStatus.setFont(Theme.MESSAGE_FONT);
+        jPanel5.add(lblProgressStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 232, 400, 20));
+
         tabMain.addTab("Progress", jPanel5);
 
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -473,11 +511,48 @@ public class MainGUI extends javax.swing.JFrame {
     private void cmbProgressMemberActionPerformed(java.awt.event.ActionEvent evt) {
         int index = cmbProgressMember.getSelectedIndex();
         if (index <= 0) {
+            selectedProgressMemberIndex = -1;
             lblProgressMemberID.setText("Member ID: ---");
             return;
         }
-        Member m = Manager.memberArray.getMember(index - 1);
+        selectedProgressMemberIndex = index - 1;
+        Member m = Manager.memberArray.getMember(selectedProgressMemberIndex);
         lblProgressMemberID.setText("Member ID: " + m.getMemberID());
+    }
+
+    private void btnRecordProgressActionPerformed(java.awt.event.ActionEvent evt) {
+        if (selectedProgressMemberIndex == -1) {
+            lblProgressStatus.setForeground(Theme.ERROR_RED);
+            lblProgressStatus.setText("Select a member first.");
+            return;
+        }
+
+        double bodyWeight;
+        try {
+            bodyWeight = Double.parseDouble(txfBodyWeight.getText());
+        } catch (NumberFormatException e) {
+            lblProgressStatus.setForeground(Theme.ERROR_RED);
+            lblProgressStatus.setText("Body weight must be a number.");
+            return;
+        }
+
+        Member m = Manager.memberArray.getMember(selectedProgressMemberIndex);
+        String newID = Manager.progressArray.generateNextProgressID();
+        ProgressRecord record = new ProgressRecord(newID, m.getMemberID(), java.time.LocalDate.now(),
+                bodyWeight, txfMeasurements.getText(), txfProgressNotes.getText());
+
+        Manager.progressArray.addRecord(record);
+        Manager.progressArray.saveToFile();
+
+        m.setCurrentWeight(bodyWeight);
+        Manager.memberArray.saveToFile();
+
+        txfBodyWeight.setText("");
+        txfMeasurements.setText("");
+        txfProgressNotes.setText("");
+
+        lblProgressStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblProgressStatus.setText("Progress recorded for " + m.getFullName() + " (" + newID + ")");
     }
 
     private void cmbTrainingPlanFocusGained(java.awt.event.FocusEvent evt) {
@@ -576,6 +651,11 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblCheckInStatus;
     private javax.swing.JComboBox<String> cmbProgressMember;
     private javax.swing.JLabel lblProgressMemberID;
+    private javax.swing.JTextField txfBodyWeight;
+    private javax.swing.JTextField txfMeasurements;
+    private javax.swing.JTextField txfProgressNotes;
+    private javax.swing.JButton btnRecordProgress;
+    private javax.swing.JLabel lblProgressStatus;
     private javax.swing.JComboBox<String> cmbTrainingPlan;
     private javax.swing.JLabel lblTrainingPlanID;
     private javax.swing.JLabel lblPlanBadge;
