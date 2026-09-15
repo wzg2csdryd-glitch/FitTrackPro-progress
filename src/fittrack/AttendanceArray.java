@@ -8,6 +8,7 @@ package fittrack;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -86,5 +87,29 @@ public class AttendanceArray {
 
     public int getSize() {
         return size;
+    }
+
+    public String generateNextAttendanceID() {
+        String lastID = attendanceArray[size - 1].getAttendanceID();
+        return Tools.generateNextID("A", lastID);
+    }
+
+    public void addRecord(AttendanceRecord record) {
+        attendanceArray[size] = record;
+        size++;
+    }
+
+    public void saveToFile() {
+        try {
+            PrintWriter output = new PrintWriter(new File("Attendance.txt"));
+            for (int i = 0; i < size; i++) {
+                AttendanceRecord a = attendanceArray[i];
+                output.println(a.getAttendanceID() + "#" + a.getMemberID() + "#"
+                        + a.getCheckInDate() + "#" + a.getCheckInTime());
+            }
+            output.close();
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("Could not write to Attendance.txt");
+        }
     }
 }

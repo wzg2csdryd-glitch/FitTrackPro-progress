@@ -11,6 +11,7 @@ package fittrack;
 public class MainGUI extends javax.swing.JFrame {
 
     private int memberIndex = 0;
+    private int selectedAttendanceMemberIndex = -1;
 
     /**
      * Creates new form MainGUI
@@ -55,6 +56,8 @@ public class MainGUI extends javax.swing.JFrame {
         btnLastMember = new javax.swing.JButton();
         cmbAttendanceMember = new javax.swing.JComboBox<>();
         lblAttendanceMemberID = new javax.swing.JLabel();
+        btnCheckIn = new javax.swing.JButton();
+        lblCheckInStatus = new javax.swing.JLabel();
         cmbProgressMember = new javax.swing.JComboBox<>();
         lblProgressMemberID = new javax.swing.JLabel();
         cmbTrainingPlan = new javax.swing.JComboBox<>();
@@ -256,6 +259,23 @@ public class MainGUI extends javax.swing.JFrame {
         lblAttendanceMemberID.setFont(Theme.LABEL_FONT);
         jPanel3.add(lblAttendanceMemberID, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 67, 250, 20));
 
+        btnCheckIn.setText("Check In");
+        btnCheckIn.setFont(Theme.BUTTON_FONT);
+        btnCheckIn.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnCheckIn.setForeground(java.awt.Color.WHITE);
+        btnCheckIn.setOpaque(true);
+        btnCheckIn.setBorderPainted(false);
+        btnCheckIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCheckInActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnCheckIn, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 100, 30));
+
+        lblCheckInStatus.setText(" ");
+        lblCheckInStatus.setFont(Theme.MESSAGE_FONT);
+        jPanel3.add(lblCheckInStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 137, 400, 20));
+
         tabMain.addTab("Attendance", jPanel3);
 
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -402,11 +422,40 @@ public class MainGUI extends javax.swing.JFrame {
     private void cmbAttendanceMemberActionPerformed(java.awt.event.ActionEvent evt) {
         int index = cmbAttendanceMember.getSelectedIndex();
         if (index <= 0) {
+            selectedAttendanceMemberIndex = -1;
             lblAttendanceMemberID.setText("Member ID: ---");
             return;
         }
-        Member m = Manager.memberArray.getMember(index - 1);
+        selectedAttendanceMemberIndex = index - 1;
+        Member m = Manager.memberArray.getMember(selectedAttendanceMemberIndex);
         lblAttendanceMemberID.setText("Member ID: " + m.getMemberID());
+    }
+
+    private void btnCheckInActionPerformed(java.awt.event.ActionEvent evt) {
+        if (selectedAttendanceMemberIndex == -1) {
+            lblCheckInStatus.setForeground(Theme.ERROR_RED);
+            lblCheckInStatus.setText("Select a member first.");
+            return;
+        }
+
+        Member m = Manager.memberArray.getMember(selectedAttendanceMemberIndex);
+        java.time.LocalDate today = java.time.LocalDate.now();
+
+        if (Manager.attendanceArray.hasCheckInOnDate(m.getMemberID(), today)) {
+            lblCheckInStatus.setForeground(Theme.ERROR_RED);
+            lblCheckInStatus.setText(m.getFullName() + " has already checked in today.");
+            return;
+        }
+
+        java.time.LocalTime now = java.time.LocalTime.now().truncatedTo(java.time.temporal.ChronoUnit.MINUTES);
+        String newID = Manager.attendanceArray.generateNextAttendanceID();
+        AttendanceRecord record = new AttendanceRecord(newID, m.getMemberID(), today, now);
+
+        Manager.attendanceArray.addRecord(record);
+        Manager.attendanceArray.saveToFile();
+
+        lblCheckInStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblCheckInStatus.setText("Checked in: " + m.getFullName() + " (" + newID + ")");
     }
 
     private void cmbProgressMemberFocusGained(java.awt.event.FocusEvent evt) {
@@ -523,6 +572,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txfMemberFitnessGoal;
     private javax.swing.JComboBox<String> cmbAttendanceMember;
     private javax.swing.JLabel lblAttendanceMemberID;
+    private javax.swing.JButton btnCheckIn;
+    private javax.swing.JLabel lblCheckInStatus;
     private javax.swing.JComboBox<String> cmbProgressMember;
     private javax.swing.JLabel lblProgressMemberID;
     private javax.swing.JComboBox<String> cmbTrainingPlan;

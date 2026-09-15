@@ -12,4 +12,11 @@ public class Tools {
         }
         return spaces.toString();
     }
+
+    public static String generateNextID(String prefix, String lastID) {
+        String numericPart = lastID.substring(prefix.length());
+        int number = Integer.parseInt(numericPart) + 1;
+        String padded = String.format("%0" + numericPart.length() + "d", number);
+        return prefix + padded;
+    }
 }
