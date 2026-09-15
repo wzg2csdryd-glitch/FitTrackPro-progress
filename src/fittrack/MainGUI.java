@@ -52,6 +52,8 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberCurrentWeight = new javax.swing.JTextField();
         txfMemberBMI = new javax.swing.JTextField();
         txfMemberFitnessGoal = new javax.swing.JTextField();
+        btnSaveContact = new javax.swing.JButton();
+        lblEditMemberStatus = new javax.swing.JLabel();
         btnFirstMember = new javax.swing.JButton();
         btnPrevMember = new javax.swing.JButton();
         btnNextMember = new javax.swing.JButton();
@@ -125,17 +127,32 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.JLabel lblMemberNameLabel = new javax.swing.JLabel("Name:");
         lblMemberNameLabel.setFont(Theme.LABEL_FONT);
         jPanel1.add(lblMemberNameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 221, 100, 18));
+        txfMemberName.setEditable(false);
         jPanel1.add(txfMemberName, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 221, 170, 22));
 
         javax.swing.JLabel lblMemberSurnameLabel = new javax.swing.JLabel("Surname:");
         lblMemberSurnameLabel.setFont(Theme.LABEL_FONT);
         jPanel1.add(lblMemberSurnameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 247, 100, 18));
+        txfMemberSurname.setEditable(false);
         jPanel1.add(txfMemberSurname, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 247, 170, 22));
 
         javax.swing.JLabel lblMemberContactLabel = new javax.swing.JLabel("Contact:");
         lblMemberContactLabel.setFont(Theme.LABEL_FONT);
         jPanel1.add(lblMemberContactLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 273, 100, 18));
-        jPanel1.add(txfMemberContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 273, 170, 22));
+        jPanel1.add(txfMemberContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 273, 120, 22));
+
+        btnSaveContact.setText("Save");
+        btnSaveContact.setFont(Theme.BUTTON_FONT);
+        btnSaveContact.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnSaveContact.setForeground(java.awt.Color.WHITE);
+        btnSaveContact.setOpaque(true);
+        btnSaveContact.setBorderPainted(false);
+        btnSaveContact.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveContactActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSaveContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 273, 55, 22));
 
         javax.swing.JLabel lblMemberJoinDateLabel = new javax.swing.JLabel("Join Date:");
         lblMemberJoinDateLabel.setFont(Theme.LABEL_FONT);
@@ -146,11 +163,13 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.JLabel lblMemberHeightLabel = new javax.swing.JLabel("Height (m):");
         lblMemberHeightLabel.setFont(Theme.LABEL_FONT);
         jPanel1.add(lblMemberHeightLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 195, 100, 18));
+        txfMemberHeight.setEditable(false);
         jPanel1.add(txfMemberHeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 195, 160, 22));
 
         javax.swing.JLabel lblMemberCurrentWeightLabel = new javax.swing.JLabel("Current Weight (kg):");
         lblMemberCurrentWeightLabel.setFont(Theme.LABEL_FONT);
         jPanel1.add(lblMemberCurrentWeightLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 221, 100, 18));
+        txfMemberCurrentWeight.setEditable(false);
         jPanel1.add(txfMemberCurrentWeight, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 221, 160, 22));
 
         javax.swing.JLabel lblMemberBMILabel = new javax.swing.JLabel("BMI:");
@@ -162,6 +181,7 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.JLabel lblMemberFitnessGoalLabel = new javax.swing.JLabel("Fitness Goal:");
         lblMemberFitnessGoalLabel.setFont(Theme.LABEL_FONT);
         jPanel1.add(lblMemberFitnessGoalLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 273, 100, 18));
+        txfMemberFitnessGoal.setEditable(false);
         jPanel1.add(txfMemberFitnessGoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 273, 160, 22));
 
         javax.swing.JPanel pnlMemberNav = new javax.swing.JPanel();
@@ -220,6 +240,10 @@ public class MainGUI extends javax.swing.JFrame {
         pnlMemberNav.add(btnLastMember);
 
         jPanel1.add(pnlMemberNav, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 300, 40));
+
+        lblEditMemberStatus.setText(" ");
+        lblEditMemberStatus.setFont(Theme.MESSAGE_FONT);
+        jPanel1.add(lblEditMemberStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 375, 500, 20));
 
         tabMain.addTab("Members", jPanel1);
 
@@ -521,6 +545,22 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberFitnessGoal.setText(m.getFitnessGoal());
     }
 
+    private void btnSaveContactActionPerformed(java.awt.event.ActionEvent evt) {
+        String newContact = txfMemberContact.getText();
+        if (newContact.contains("#") || newContact.contains(";")) {
+            lblEditMemberStatus.setForeground(Theme.ERROR_RED);
+            lblEditMemberStatus.setText("Contact details cannot contain # or ;");
+            return;
+        }
+
+        Member m = Manager.memberArray.getMember(memberIndex);
+        m.setContactDetails(newContact);
+        Manager.memberArray.saveToFile();
+
+        lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblEditMemberStatus.setText("Contact details saved for " + m.getFullName() + ".");
+    }
+
     private void btnFirstMemberActionPerformed(java.awt.event.ActionEvent evt) {
         memberIndex = 0;
         updateMemberFields(memberIndex);
@@ -745,6 +785,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txfMemberCurrentWeight;
     private javax.swing.JTextField txfMemberBMI;
     private javax.swing.JTextField txfMemberFitnessGoal;
+    private javax.swing.JButton btnSaveContact;
+    private javax.swing.JLabel lblEditMemberStatus;
     private javax.swing.JComboBox<String> cmbAttendanceMember;
     private javax.swing.JLabel lblAttendanceMemberID;
     private javax.swing.JButton btnCheckIn;
