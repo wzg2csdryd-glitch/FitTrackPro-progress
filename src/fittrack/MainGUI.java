@@ -690,7 +690,7 @@ public class MainGUI extends javax.swing.JFrame {
                     lblDialogStatus.setText("Dates must be in yyyy-mm-dd format.");
                     return;
                 }
-                if (!endDate.isAfter(startDate)) {
+                if (!Validator.isValidMembershipDates(startDate, endDate)) {
                     lblDialogStatus.setForeground(Theme.ERROR_RED);
                     lblDialogStatus.setText("End date must be after start date.");
                     return;
@@ -896,14 +896,24 @@ public class MainGUI extends javax.swing.JFrame {
                 String contact = fldContact.getText().trim();
                 String fitnessGoal = fldFitnessGoal.getText().trim();
 
-                if (name.isEmpty() || surname.isEmpty() || contact.isEmpty() || fitnessGoal.isEmpty()) {
+                if (!Validator.isValidName(name)) {
                     lblDialogStatus.setForeground(Theme.ERROR_RED);
-                    lblDialogStatus.setText("All fields are required.");
+                    lblDialogStatus.setText("Name is required and cannot contain # or ;");
                     return;
                 }
-                if (contact.contains("#") || contact.contains(";")) {
+                if (!Validator.isValidName(surname)) {
                     lblDialogStatus.setForeground(Theme.ERROR_RED);
-                    lblDialogStatus.setText("Contact cannot contain # or ;");
+                    lblDialogStatus.setText("Surname is required and cannot contain # or ;");
+                    return;
+                }
+                if (!Validator.isPresent(contact) || !Validator.isValidFreeText(contact)) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Contact is required and cannot contain # or ;");
+                    return;
+                }
+                if (!Validator.isPresent(fitnessGoal) || !Validator.isValidFreeText(fitnessGoal)) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Fitness goal is required and cannot contain # or ;");
                     return;
                 }
 
@@ -926,9 +936,14 @@ public class MainGUI extends javax.swing.JFrame {
                     lblDialogStatus.setText("Height and starting weight must be numbers.");
                     return;
                 }
-                if (height <= 0) {
+                if (!Validator.isValidHeight(height)) {
                     lblDialogStatus.setForeground(Theme.ERROR_RED);
-                    lblDialogStatus.setText("Height must be greater than zero.");
+                    lblDialogStatus.setText("Height must be between 1.20 m and 2.30 m.");
+                    return;
+                }
+                if (!Validator.isValidWeight(startingWeight)) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Starting weight must be between 0 and 300 kg.");
                     return;
                 }
 
@@ -995,9 +1010,9 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void btnSaveContactActionPerformed(java.awt.event.ActionEvent evt) {
         String newContact = txfMemberContact.getText();
-        if (newContact.contains("#") || newContact.contains(";")) {
+        if (!Validator.isPresent(newContact) || !Validator.isValidFreeText(newContact)) {
             lblEditMemberStatus.setForeground(Theme.ERROR_RED);
-            lblEditMemberStatus.setText("Contact details cannot contain # or ;");
+            lblEditMemberStatus.setText("Contact details are required and cannot contain # or ;");
             return;
         }
 
@@ -1123,6 +1138,16 @@ public class MainGUI extends javax.swing.JFrame {
             lblProgressStatus.setText("Body weight must be a number.");
             return;
         }
+        if (!Validator.isValidWeight(bodyWeight)) {
+            lblProgressStatus.setForeground(Theme.ERROR_RED);
+            lblProgressStatus.setText("Body weight must be between 0 and 300 kg.");
+            return;
+        }
+        if (!Validator.isValidFreeText(txfMeasurements.getText()) || !Validator.isValidFreeText(txfProgressNotes.getText())) {
+            lblProgressStatus.setForeground(Theme.ERROR_RED);
+            lblProgressStatus.setText("Measurements and notes cannot contain # or ;");
+            return;
+        }
 
         Member m = Manager.memberArray.getMember(selectedProgressMemberIndex);
         String newID = Manager.progressArray.generateNextProgressID();
@@ -1178,7 +1203,7 @@ public class MainGUI extends javax.swing.JFrame {
             return;
         }
         String newNotes = txfPlanNotes.getText();
-        if (newNotes.contains("#") || newNotes.contains(";")) {
+        if (!Validator.isValidFreeText(newNotes)) {
             lblPlanStatus.setForeground(Theme.ERROR_RED);
             lblPlanStatus.setText("Notes cannot contain # or ;");
             return;
@@ -1237,16 +1262,19 @@ public class MainGUI extends javax.swing.JFrame {
                 String splitType = fldSplitType.getText().trim();
                 String notes = fldNotes.getText().trim();
 
-                if (planName.isEmpty() || splitType.isEmpty()) {
+                if (!Validator.isValidName(planName)) {
                     lblDialogStatus.setForeground(Theme.ERROR_RED);
-                    lblDialogStatus.setText("Plan name and split type are required.");
+                    lblDialogStatus.setText("Plan name is required and cannot contain # or ;");
                     return;
                 }
-                if (planName.contains("#") || planName.contains(";")
-                        || splitType.contains("#") || splitType.contains(";")
-                        || notes.contains("#") || notes.contains(";")) {
+                if (!Validator.isValidName(splitType)) {
                     lblDialogStatus.setForeground(Theme.ERROR_RED);
-                    lblDialogStatus.setText("Fields cannot contain # or ;");
+                    lblDialogStatus.setText("Split type is required and cannot contain # or ;");
+                    return;
+                }
+                if (!Validator.isValidFreeText(notes)) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Notes cannot contain # or ;");
                     return;
                 }
                 int difficultyIndex = fldDifficulty.getSelectedIndex();
