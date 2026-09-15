@@ -53,6 +53,7 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberBMI = new javax.swing.JTextField();
         txfMemberFitnessGoal = new javax.swing.JTextField();
         btnAddMember = new javax.swing.JButton();
+        btnDeleteMember = new javax.swing.JButton();
         btnSaveContact = new javax.swing.JButton();
         lblEditMemberStatus = new javax.swing.JLabel();
         lblMemberActiveStatus = new javax.swing.JLabel();
@@ -133,6 +134,19 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnAddMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 155, 120, 28));
+
+        btnDeleteMember.setText("Delete Member");
+        btnDeleteMember.setFont(Theme.BUTTON_FONT);
+        btnDeleteMember.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnDeleteMember.setForeground(java.awt.Color.WHITE);
+        btnDeleteMember.setOpaque(true);
+        btnDeleteMember.setBorderPainted(false);
+        btnDeleteMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteMemberActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnDeleteMember, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 155, 130, 28));
 
         javax.swing.JLabel lblMemberIDLabel = new javax.swing.JLabel("Member ID:");
         lblMemberIDLabel.setFont(Theme.LABEL_FONT);
@@ -597,6 +611,55 @@ public class MainGUI extends javax.swing.JFrame {
         showAddMemberDialog();
     }
 
+    private void btnDeleteMemberActionPerformed(java.awt.event.ActionEvent evt) {
+        if (Manager.memberArray.getSize() == 0) {
+            return;
+        }
+
+        Member m = Manager.memberArray.getMember(memberIndex);
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Delete " + m.getFullName() + " (" + m.getMemberID() + ")? This cannot be undone.",
+                "Confirm Delete", javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        String deletedName = m.getFullName();
+        Manager.memberArray.removeMember(memberIndex);
+        Manager.memberArray.saveToFile();
+
+        txaMembers.setText(Manager.memberArray.toString());
+
+        if (Manager.memberArray.getSize() == 0) {
+            memberIndex = 0;
+            clearMemberFields();
+            lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+            lblEditMemberStatus.setText("Deleted " + deletedName + ". No members remain.");
+            return;
+        }
+
+        if (memberIndex >= Manager.memberArray.getSize()) {
+            memberIndex = Manager.memberArray.getSize() - 1;
+        }
+        updateMemberFields(memberIndex);
+
+        lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblEditMemberStatus.setText("Deleted " + deletedName + ".");
+    }
+
+    private void clearMemberFields() {
+        txfMemberID.setText("");
+        txfMemberName.setText("");
+        txfMemberSurname.setText("");
+        txfMemberContact.setText("");
+        txfMemberJoinDate.setText("");
+        txfMemberHeight.setText("");
+        txfMemberCurrentWeight.setText("");
+        txfMemberBMI.setText("");
+        txfMemberFitnessGoal.setText("");
+        lblMemberActiveStatus.setText("");
+    }
+
     private void showAddMemberDialog() {
         final javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Add Member", true);
         dialog.setLayout(new java.awt.BorderLayout(10, 10));
@@ -992,6 +1055,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txfMemberBMI;
     private javax.swing.JTextField txfMemberFitnessGoal;
     private javax.swing.JButton btnAddMember;
+    private javax.swing.JButton btnDeleteMember;
     private javax.swing.JButton btnSaveContact;
     private javax.swing.JLabel lblEditMemberStatus;
     private javax.swing.JLabel lblMemberActiveStatus;

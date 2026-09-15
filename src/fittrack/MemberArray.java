@@ -100,6 +100,13 @@ public void addMember(Member member) {
     size++;
 }
 
+public void removeMember(int index) {
+    for (int i = index; i < size - 1; i++) {
+        memberArray[i] = memberArray[i + 1];
+    }
+    size--;
+}
+
 public void saveToFile() {
     try {
         PrintWriter output = new PrintWriter(new File("Members.txt"));
