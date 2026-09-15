@@ -76,6 +76,7 @@ public class MainGUI extends javax.swing.JFrame {
         cmbTrainingPlan = new javax.swing.JComboBox<>();
         lblTrainingPlanID = new javax.swing.JLabel();
         lblPlanBadge = new javax.swing.JLabel();
+        btnCreateMembership = new javax.swing.JButton();
         cmbMembership = new javax.swing.JComboBox<>();
         lblMembershipInfo = new javax.swing.JLabel();
         cmbPaymentStatus = new javax.swing.JComboBox<>();
@@ -319,6 +320,19 @@ public class MainGUI extends javax.swing.JFrame {
         });
         jPanel2.add(btnSortMemberships, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 155, 150, 28));
 
+        btnCreateMembership.setText("Create/Renew Membership");
+        btnCreateMembership.setFont(Theme.BUTTON_FONT);
+        btnCreateMembership.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnCreateMembership.setForeground(java.awt.Color.WHITE);
+        btnCreateMembership.setOpaque(true);
+        btnCreateMembership.setBorderPainted(false);
+        btnCreateMembership.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateMembershipActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnCreateMembership, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 155, 190, 28));
+
         javax.swing.JLabel lblSelectMembership = new javax.swing.JLabel("Select Membership:");
         lblSelectMembership.setFont(Theme.LABEL_FONT);
         jPanel2.add(lblSelectMembership, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 195, 150, 18));
@@ -559,6 +573,130 @@ public class MainGUI extends javax.swing.JFrame {
         lblMembershipInfo.setText("Start: " + ms.getStartDate() + " | End: " + ms.getEndDate()
                 + " | Current Status: " + ms.getPaymentStatus());
         cmbPaymentStatus.setSelectedItem(ms.getPaymentStatus());
+    }
+
+    private void btnCreateMembershipActionPerformed(java.awt.event.ActionEvent evt) {
+        showCreateMembershipDialog();
+    }
+
+    private void showCreateMembershipDialog() {
+        final javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Create/Renew Membership", true);
+        dialog.setLayout(new java.awt.BorderLayout(10, 10));
+
+        javax.swing.JPanel fieldsPanel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 8, 8));
+
+        final javax.swing.JComboBox<String> fldMember = new javax.swing.JComboBox<>();
+        fldMember.addItem("Select option");
+        for (int i = 0; i < Manager.memberArray.getSize(); i++) {
+            fldMember.addItem(Manager.memberArray.getMember(i).getFullName());
+        }
+
+        final javax.swing.JComboBox<String> fldType = new javax.swing.JComboBox<>(
+                new String[] { "Select option", "Basic", "Standard", "Premium" });
+
+        final javax.swing.JTextField fldStartDate = new javax.swing.JTextField(java.time.LocalDate.now().toString());
+        final javax.swing.JTextField fldEndDate = new javax.swing.JTextField();
+        final javax.swing.JComboBox<String> fldPaymentStatus = new javax.swing.JComboBox<>(
+                new String[] { "Pending", "Paid", "Overdue" });
+
+        fieldsPanel.add(new javax.swing.JLabel("Member:"));
+        fieldsPanel.add(fldMember);
+        fieldsPanel.add(new javax.swing.JLabel("Membership Type:"));
+        fieldsPanel.add(fldType);
+        fieldsPanel.add(new javax.swing.JLabel("Start Date (yyyy-mm-dd):"));
+        fieldsPanel.add(fldStartDate);
+        fieldsPanel.add(new javax.swing.JLabel("End Date (yyyy-mm-dd):"));
+        fieldsPanel.add(fldEndDate);
+        fieldsPanel.add(new javax.swing.JLabel("Payment Status:"));
+        fieldsPanel.add(fldPaymentStatus);
+
+        dialog.add(fieldsPanel, java.awt.BorderLayout.CENTER);
+
+        final javax.swing.JLabel lblDialogStatus = new javax.swing.JLabel(" ");
+        lblDialogStatus.setFont(Theme.MESSAGE_FONT);
+
+        javax.swing.JButton btnCreate = new javax.swing.JButton("Create");
+        btnCreate.setFont(Theme.BUTTON_FONT);
+        btnCreate.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnCreate.setForeground(java.awt.Color.WHITE);
+        btnCreate.setOpaque(true);
+        btnCreate.setBorderPainted(false);
+
+        javax.swing.JButton btnCancel = new javax.swing.JButton("Cancel");
+
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedMemberIndex = fldMember.getSelectedIndex();
+                if (selectedMemberIndex <= 0) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Select a member.");
+                    return;
+                }
+                int typeIndex = fldType.getSelectedIndex();
+                if (typeIndex <= 0) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Select a membership type.");
+                    return;
+                }
+
+                java.time.LocalDate startDate;
+                java.time.LocalDate endDate;
+                try {
+                    startDate = java.time.LocalDate.parse(fldStartDate.getText().trim());
+                    endDate = java.time.LocalDate.parse(fldEndDate.getText().trim());
+                } catch (java.time.format.DateTimeParseException e) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Dates must be in yyyy-mm-dd format.");
+                    return;
+                }
+                if (!endDate.isAfter(startDate)) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("End date must be after start date.");
+                    return;
+                }
+
+                Member m = Manager.memberArray.getMember(selectedMemberIndex - 1);
+                String membershipType = (String) fldType.getSelectedItem();
+                String paymentStatus = (String) fldPaymentStatus.getSelectedItem();
+                String newID = Manager.membershipArray.generateNextMembershipID();
+
+                Membership newMembership = new Membership(newID, m.getMemberID(), membershipType,
+                        startDate, endDate, paymentStatus);
+
+                Manager.membershipArray.addMembership(newMembership);
+                Manager.membershipArray.saveToFile();
+
+                m.addMembershipID(newID);
+                Manager.memberArray.saveToFile();
+
+                txaMemberships.setText(Manager.membershipArray.toString());
+                populateMembershipCombo();
+
+                lblPaymentStatusMessage.setForeground(Theme.SUCCESS_GREEN);
+                lblPaymentStatusMessage.setText("Created membership " + newID + " for " + m.getFullName() + ".");
+
+                dialog.dispose();
+            }
+        });
+
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dialog.dispose();
+            }
+        });
+
+        javax.swing.JPanel buttonRow = new javax.swing.JPanel();
+        buttonRow.add(btnCreate);
+        buttonRow.add(btnCancel);
+
+        javax.swing.JPanel bottomPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        bottomPanel.add(lblDialogStatus, java.awt.BorderLayout.NORTH);
+        bottomPanel.add(buttonRow, java.awt.BorderLayout.SOUTH);
+        dialog.add(bottomPanel, java.awt.BorderLayout.SOUTH);
+
+        dialog.setSize(380, 280);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     private void btnUpdatePaymentStatusActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1074,6 +1212,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbTrainingPlan;
     private javax.swing.JLabel lblTrainingPlanID;
     private javax.swing.JLabel lblPlanBadge;
+    private javax.swing.JButton btnCreateMembership;
     private javax.swing.JComboBox<String> cmbMembership;
     private javax.swing.JLabel lblMembershipInfo;
     private javax.swing.JComboBox<String> cmbPaymentStatus;

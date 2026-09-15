@@ -80,6 +80,16 @@ public class MembershipArray {
         return size;
     }
 
+    public String generateNextMembershipID() {
+        String lastID = membershipArray[size - 1].getMembershipID();
+        return Tools.generateNextID("MS", lastID);
+    }
+
+    public void addMembership(Membership membership) {
+        membershipArray[size] = membership;
+        size++;
+    }
+
     public void saveToFile() {
         try {
             PrintWriter output = new PrintWriter(new File("Memberships.txt"));

@@ -121,6 +121,14 @@ public String getMembershipList() {
     return membershipList;
 }
 
+public void addMembershipID(String newMembershipID) {
+    if (membershipList.isEmpty()) {
+        membershipList = newMembershipID;
+    } else {
+        membershipList = membershipList + ";" + newMembershipID;
+    }
+}
+
 @Override
 public String toString() {
     return memberID + " | " + getFullName() + " | " + fitnessGoal + " | " + (activeStatus ? "Active" : "Inactive");
