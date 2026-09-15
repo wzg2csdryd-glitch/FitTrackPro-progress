@@ -13,6 +13,7 @@ public class MainGUI extends javax.swing.JFrame {
     private int memberIndex = 0;
     private int selectedAttendanceMemberIndex = -1;
     private int selectedProgressMemberIndex = -1;
+    private int selectedMembershipIndex = -1;
 
     /**
      * Creates new form MainGUI
@@ -69,6 +70,11 @@ public class MainGUI extends javax.swing.JFrame {
         cmbTrainingPlan = new javax.swing.JComboBox<>();
         lblTrainingPlanID = new javax.swing.JLabel();
         lblPlanBadge = new javax.swing.JLabel();
+        cmbMembership = new javax.swing.JComboBox<>();
+        lblMembershipInfo = new javax.swing.JLabel();
+        cmbPaymentStatus = new javax.swing.JComboBox<>();
+        btnUpdatePaymentStatus = new javax.swing.JButton();
+        lblPaymentStatusMessage = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         scrMemberships = new javax.swing.JScrollPane();
         txaMemberships = new javax.swing.JTextArea();
@@ -225,7 +231,7 @@ public class MainGUI extends javax.swing.JFrame {
         txaMemberships.setRows(5);
         scrMemberships.setViewportView(txaMemberships);
 
-        jPanel2.add(scrMemberships, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 560, 350));
+        jPanel2.add(scrMemberships, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 560, 140));
 
         btnSortMemberships.setText("Sort by End Date");
         btnSortMemberships.setFont(Theme.BUTTON_FONT);
@@ -238,7 +244,51 @@ public class MainGUI extends javax.swing.JFrame {
                 btnSortMembershipsActionPerformed(evt);
             }
         });
-        jPanel2.add(btnSortMemberships, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 150, 30));
+        jPanel2.add(btnSortMemberships, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 155, 150, 28));
+
+        javax.swing.JLabel lblSelectMembership = new javax.swing.JLabel("Select Membership:");
+        lblSelectMembership.setFont(Theme.LABEL_FONT);
+        jPanel2.add(lblSelectMembership, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 195, 150, 18));
+
+        cmbMembership.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cmbMembershipFocusGained(evt);
+            }
+        });
+        cmbMembership.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbMembershipActionPerformed(evt);
+            }
+        });
+        jPanel2.add(cmbMembership, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 217, 400, 25));
+
+        lblMembershipInfo.setText(" ");
+        lblMembershipInfo.setFont(Theme.LABEL_FONT);
+        jPanel2.add(lblMembershipInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 247, 500, 20));
+
+        javax.swing.JLabel lblNewPaymentStatus = new javax.swing.JLabel("New Payment Status:");
+        lblNewPaymentStatus.setFont(Theme.LABEL_FONT);
+        jPanel2.add(lblNewPaymentStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 150, 18));
+
+        cmbPaymentStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Paid", "Pending", "Overdue" }));
+        jPanel2.add(cmbPaymentStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 280, 150, 25));
+
+        btnUpdatePaymentStatus.setText("Update Status");
+        btnUpdatePaymentStatus.setFont(Theme.BUTTON_FONT);
+        btnUpdatePaymentStatus.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnUpdatePaymentStatus.setForeground(java.awt.Color.WHITE);
+        btnUpdatePaymentStatus.setOpaque(true);
+        btnUpdatePaymentStatus.setBorderPainted(false);
+        btnUpdatePaymentStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdatePaymentStatusActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnUpdatePaymentStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 315, 150, 30));
+
+        lblPaymentStatusMessage.setText(" ");
+        lblPaymentStatusMessage.setFont(Theme.MESSAGE_FONT);
+        jPanel2.add(lblPaymentStatusMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 352, 400, 20));
 
         tabMain.addTab("Memberships", jPanel2);
 
@@ -396,6 +446,7 @@ public class MainGUI extends javax.swing.JFrame {
         populateAttendanceMemberCombo();
         populateProgressMemberCombo();
         populateTrainingPlanCombo();
+        populateMembershipCombo();
     }
 
     private void btnSortMembersActionPerformed(java.awt.event.ActionEvent evt) {
@@ -406,6 +457,55 @@ public class MainGUI extends javax.swing.JFrame {
     private void btnSortMembershipsActionPerformed(java.awt.event.ActionEvent evt) {
         Manager.membershipArray.sortByEndDate();
         txaMemberships.setText(Manager.membershipArray.toString());
+    }
+
+    private void cmbMembershipFocusGained(java.awt.event.FocusEvent evt) {
+        populateMembershipCombo();
+    }
+
+    private void populateMembershipCombo() {
+        cmbMembership.removeAllItems();
+        cmbMembership.addItem("Select option");
+        for (int i = 0; i < Manager.membershipArray.getSize(); i++) {
+            Membership ms = Manager.membershipArray.getMembership(i);
+            int memberPos = Manager.memberArray.searchFirst(ms.getMemberID());
+            String memberName = (memberPos == -1) ? ms.getMemberID() : Manager.memberArray.getMember(memberPos).getFullName();
+            cmbMembership.addItem(memberName + " - " + ms.getMembershipType() + " (" + ms.getMembershipID() + ")");
+        }
+    }
+
+    private void cmbMembershipActionPerformed(java.awt.event.ActionEvent evt) {
+        int index = cmbMembership.getSelectedIndex();
+        if (index <= 0) {
+            selectedMembershipIndex = -1;
+            lblMembershipInfo.setText(" ");
+            return;
+        }
+        selectedMembershipIndex = index - 1;
+        Membership ms = Manager.membershipArray.getMembership(selectedMembershipIndex);
+        lblMembershipInfo.setText("Start: " + ms.getStartDate() + " | End: " + ms.getEndDate()
+                + " | Current Status: " + ms.getPaymentStatus());
+        cmbPaymentStatus.setSelectedItem(ms.getPaymentStatus());
+    }
+
+    private void btnUpdatePaymentStatusActionPerformed(java.awt.event.ActionEvent evt) {
+        if (selectedMembershipIndex == -1) {
+            lblPaymentStatusMessage.setForeground(Theme.ERROR_RED);
+            lblPaymentStatusMessage.setText("Select a membership first.");
+            return;
+        }
+
+        Membership ms = Manager.membershipArray.getMembership(selectedMembershipIndex);
+        String newStatus = (String) cmbPaymentStatus.getSelectedItem();
+        ms.setPaymentStatus(newStatus);
+        Manager.membershipArray.saveToFile();
+
+        txaMemberships.setText(Manager.membershipArray.toString());
+        lblMembershipInfo.setText("Start: " + ms.getStartDate() + " | End: " + ms.getEndDate()
+                + " | Current Status: " + ms.getPaymentStatus());
+
+        lblPaymentStatusMessage.setForeground(Theme.SUCCESS_GREEN);
+        lblPaymentStatusMessage.setText("Payment status updated to " + newStatus + " for " + ms.getMembershipID());
     }
 
     private void updateMemberFields(int pos) {
@@ -659,6 +759,11 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbTrainingPlan;
     private javax.swing.JLabel lblTrainingPlanID;
     private javax.swing.JLabel lblPlanBadge;
+    private javax.swing.JComboBox<String> cmbMembership;
+    private javax.swing.JLabel lblMembershipInfo;
+    private javax.swing.JComboBox<String> cmbPaymentStatus;
+    private javax.swing.JButton btnUpdatePaymentStatus;
+    private javax.swing.JLabel lblPaymentStatusMessage;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
