@@ -54,6 +54,8 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberFitnessGoal = new javax.swing.JTextField();
         btnSaveContact = new javax.swing.JButton();
         lblEditMemberStatus = new javax.swing.JLabel();
+        lblMemberActiveStatus = new javax.swing.JLabel();
+        btnToggleActive = new javax.swing.JButton();
         btnFirstMember = new javax.swing.JButton();
         btnPrevMember = new javax.swing.JButton();
         btnNextMember = new javax.swing.JButton();
@@ -183,6 +185,25 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel1.add(lblMemberFitnessGoalLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 273, 100, 18));
         txfMemberFitnessGoal.setEditable(false);
         jPanel1.add(txfMemberFitnessGoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 273, 160, 22));
+
+        javax.swing.JLabel lblMemberStatusLabel = new javax.swing.JLabel("Status:");
+        lblMemberStatusLabel.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberStatusLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 299, 60, 18));
+
+        lblMemberActiveStatus.setFont(Theme.LABEL_FONT);
+        jPanel1.add(lblMemberActiveStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(365, 299, 70, 18));
+
+        btnToggleActive.setFont(Theme.BUTTON_FONT);
+        btnToggleActive.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnToggleActive.setForeground(java.awt.Color.WHITE);
+        btnToggleActive.setOpaque(true);
+        btnToggleActive.setBorderPainted(false);
+        btnToggleActive.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnToggleActiveActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnToggleActive, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 298, 120, 22));
 
         javax.swing.JPanel pnlMemberNav = new javax.swing.JPanel();
         pnlMemberNav.setBackground(Theme.BACKGROUND);
@@ -543,6 +564,31 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberCurrentWeight.setText(String.valueOf(m.getCurrentWeight()));
         txfMemberBMI.setText(String.valueOf(m.getBmi()));
         txfMemberFitnessGoal.setText(m.getFitnessGoal());
+        updateActiveStatusDisplay(m);
+    }
+
+    private void updateActiveStatusDisplay(Member m) {
+        if (m.isActiveStatus()) {
+            lblMemberActiveStatus.setForeground(Theme.SUCCESS_GREEN);
+            lblMemberActiveStatus.setText("Active");
+            btnToggleActive.setText("Deactivate");
+        } else {
+            lblMemberActiveStatus.setForeground(Theme.ERROR_RED);
+            lblMemberActiveStatus.setText("Inactive");
+            btnToggleActive.setText("Activate");
+        }
+    }
+
+    private void btnToggleActiveActionPerformed(java.awt.event.ActionEvent evt) {
+        Member m = Manager.memberArray.getMember(memberIndex);
+        m.setActiveStatus(!m.isActiveStatus());
+        Manager.memberArray.saveToFile();
+
+        updateActiveStatusDisplay(m);
+        txaMembers.setText(Manager.memberArray.toString());
+
+        lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblEditMemberStatus.setText(m.getFullName() + " is now " + (m.isActiveStatus() ? "Active" : "Inactive") + ".");
     }
 
     private void btnSaveContactActionPerformed(java.awt.event.ActionEvent evt) {
@@ -787,6 +833,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txfMemberFitnessGoal;
     private javax.swing.JButton btnSaveContact;
     private javax.swing.JLabel lblEditMemberStatus;
+    private javax.swing.JLabel lblMemberActiveStatus;
+    private javax.swing.JButton btnToggleActive;
     private javax.swing.JComboBox<String> cmbAttendanceMember;
     private javax.swing.JLabel lblAttendanceMemberID;
     private javax.swing.JButton btnCheckIn;
