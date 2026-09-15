@@ -14,6 +14,7 @@ public class MainGUI extends javax.swing.JFrame {
     private int selectedAttendanceMemberIndex = -1;
     private int selectedProgressMemberIndex = -1;
     private int selectedMembershipIndex = -1;
+    private int selectedTrainingPlanIndex = -1;
 
     /**
      * Creates new form MainGUI
@@ -76,6 +77,10 @@ public class MainGUI extends javax.swing.JFrame {
         cmbTrainingPlan = new javax.swing.JComboBox<>();
         lblTrainingPlanID = new javax.swing.JLabel();
         lblPlanBadge = new javax.swing.JLabel();
+        txfPlanNotes = new javax.swing.JTextField();
+        btnSaveNotes = new javax.swing.JButton();
+        btnCreatePlan = new javax.swing.JButton();
+        lblPlanStatus = new javax.swing.JLabel();
         btnCreateMembership = new javax.swing.JButton();
         cmbMembership = new javax.swing.JComboBox<>();
         lblMembershipInfo = new javax.swing.JLabel();
@@ -446,6 +451,42 @@ public class MainGUI extends javax.swing.JFrame {
 
         lblPlanBadge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jPanel4.add(lblPlanBadge, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 95, 140, 60));
+
+        javax.swing.JLabel lblPlanNotesLabel = new javax.swing.JLabel("Notes:");
+        lblPlanNotesLabel.setFont(Theme.LABEL_FONT);
+        jPanel4.add(lblPlanNotesLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 165, 150, 18));
+
+        jPanel4.add(txfPlanNotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 187, 400, 22));
+
+        btnSaveNotes.setText("Save");
+        btnSaveNotes.setFont(Theme.BUTTON_FONT);
+        btnSaveNotes.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnSaveNotes.setForeground(java.awt.Color.WHITE);
+        btnSaveNotes.setOpaque(true);
+        btnSaveNotes.setBorderPainted(false);
+        btnSaveNotes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveNotesActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnSaveNotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 187, 65, 22));
+
+        btnCreatePlan.setText("Create Plan");
+        btnCreatePlan.setFont(Theme.BUTTON_FONT);
+        btnCreatePlan.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnCreatePlan.setForeground(java.awt.Color.WHITE);
+        btnCreatePlan.setOpaque(true);
+        btnCreatePlan.setBorderPainted(false);
+        btnCreatePlan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreatePlanActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnCreatePlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 150, 28));
+
+        lblPlanStatus.setText(" ");
+        lblPlanStatus.setFont(Theme.MESSAGE_FONT);
+        jPanel4.add(lblPlanStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 255, 450, 20));
 
         tabMain.addTab("Training Plans", jPanel4);
 
@@ -1117,13 +1158,138 @@ public class MainGUI extends javax.swing.JFrame {
     private void cmbTrainingPlanActionPerformed(java.awt.event.ActionEvent evt) {
         int index = cmbTrainingPlan.getSelectedIndex();
         if (index <= 0) {
+            selectedTrainingPlanIndex = -1;
             lblTrainingPlanID.setText("Plan ID: ---");
             lblPlanBadge.setIcon(null);
+            txfPlanNotes.setText("");
             return;
         }
-        TrainingPlan p = Manager.trainingPlanArray.getTrainingPlan(index - 1);
+        selectedTrainingPlanIndex = index - 1;
+        TrainingPlan p = Manager.trainingPlanArray.getTrainingPlan(selectedTrainingPlanIndex);
         lblTrainingPlanID.setText("Plan ID: " + p.getPlanID());
         updatePlanBadge(p.getDifficulty());
+        txfPlanNotes.setText(p.getNotes());
+    }
+
+    private void btnSaveNotesActionPerformed(java.awt.event.ActionEvent evt) {
+        if (selectedTrainingPlanIndex == -1) {
+            lblPlanStatus.setForeground(Theme.ERROR_RED);
+            lblPlanStatus.setText("Select a plan first.");
+            return;
+        }
+        String newNotes = txfPlanNotes.getText();
+        if (newNotes.contains("#") || newNotes.contains(";")) {
+            lblPlanStatus.setForeground(Theme.ERROR_RED);
+            lblPlanStatus.setText("Notes cannot contain # or ;");
+            return;
+        }
+
+        TrainingPlan p = Manager.trainingPlanArray.getTrainingPlan(selectedTrainingPlanIndex);
+        p.setNotes(newNotes);
+        Manager.trainingPlanArray.saveToFile();
+
+        lblPlanStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblPlanStatus.setText("Notes saved for " + p.getPlanName() + ".");
+    }
+
+    private void btnCreatePlanActionPerformed(java.awt.event.ActionEvent evt) {
+        showCreatePlanDialog();
+    }
+
+    private void showCreatePlanDialog() {
+        final javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Create Training Plan", true);
+        dialog.setLayout(new java.awt.BorderLayout(10, 10));
+
+        javax.swing.JPanel fieldsPanel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 8, 8));
+
+        final javax.swing.JTextField fldPlanName = new javax.swing.JTextField();
+        final javax.swing.JTextField fldSplitType = new javax.swing.JTextField();
+        final javax.swing.JComboBox<String> fldDifficulty = new javax.swing.JComboBox<>(
+                new String[] { "Select option", "Beginner", "Intermediate", "Advanced" });
+        final javax.swing.JTextField fldNotes = new javax.swing.JTextField();
+
+        fieldsPanel.add(new javax.swing.JLabel("Plan Name:"));
+        fieldsPanel.add(fldPlanName);
+        fieldsPanel.add(new javax.swing.JLabel("Split Type:"));
+        fieldsPanel.add(fldSplitType);
+        fieldsPanel.add(new javax.swing.JLabel("Difficulty:"));
+        fieldsPanel.add(fldDifficulty);
+        fieldsPanel.add(new javax.swing.JLabel("Notes:"));
+        fieldsPanel.add(fldNotes);
+
+        dialog.add(fieldsPanel, java.awt.BorderLayout.CENTER);
+
+        final javax.swing.JLabel lblDialogStatus = new javax.swing.JLabel(" ");
+        lblDialogStatus.setFont(Theme.MESSAGE_FONT);
+
+        javax.swing.JButton btnCreate = new javax.swing.JButton("Create");
+        btnCreate.setFont(Theme.BUTTON_FONT);
+        btnCreate.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnCreate.setForeground(java.awt.Color.WHITE);
+        btnCreate.setOpaque(true);
+        btnCreate.setBorderPainted(false);
+
+        javax.swing.JButton btnCancel = new javax.swing.JButton("Cancel");
+
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                String planName = fldPlanName.getText().trim();
+                String splitType = fldSplitType.getText().trim();
+                String notes = fldNotes.getText().trim();
+
+                if (planName.isEmpty() || splitType.isEmpty()) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Plan name and split type are required.");
+                    return;
+                }
+                if (planName.contains("#") || planName.contains(";")
+                        || splitType.contains("#") || splitType.contains(";")
+                        || notes.contains("#") || notes.contains(";")) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Fields cannot contain # or ;");
+                    return;
+                }
+                int difficultyIndex = fldDifficulty.getSelectedIndex();
+                if (difficultyIndex <= 0) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("Select a difficulty.");
+                    return;
+                }
+                String difficulty = (String) fldDifficulty.getSelectedItem();
+
+                String newID = Manager.trainingPlanArray.generateNextPlanID();
+                TrainingPlan newPlan = new TrainingPlan(newID, planName, splitType, difficulty, notes);
+
+                Manager.trainingPlanArray.addTrainingPlan(newPlan);
+                Manager.trainingPlanArray.saveToFile();
+
+                populateTrainingPlanCombo();
+
+                lblPlanStatus.setForeground(Theme.SUCCESS_GREEN);
+                lblPlanStatus.setText("Created plan " + planName + " (" + newID + ").");
+
+                dialog.dispose();
+            }
+        });
+
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dialog.dispose();
+            }
+        });
+
+        javax.swing.JPanel buttonRow = new javax.swing.JPanel();
+        buttonRow.add(btnCreate);
+        buttonRow.add(btnCancel);
+
+        javax.swing.JPanel bottomPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        bottomPanel.add(lblDialogStatus, java.awt.BorderLayout.NORTH);
+        bottomPanel.add(buttonRow, java.awt.BorderLayout.SOUTH);
+        dialog.add(bottomPanel, java.awt.BorderLayout.SOUTH);
+
+        dialog.setSize(380, 260);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     private void updatePlanBadge(String difficulty) {
@@ -1212,6 +1378,10 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbTrainingPlan;
     private javax.swing.JLabel lblTrainingPlanID;
     private javax.swing.JLabel lblPlanBadge;
+    private javax.swing.JTextField txfPlanNotes;
+    private javax.swing.JButton btnSaveNotes;
+    private javax.swing.JButton btnCreatePlan;
+    private javax.swing.JLabel lblPlanStatus;
     private javax.swing.JButton btnCreateMembership;
     private javax.swing.JComboBox<String> cmbMembership;
     private javax.swing.JLabel lblMembershipInfo;

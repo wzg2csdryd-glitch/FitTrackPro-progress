@@ -6,6 +6,7 @@ package fittrack;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class TrainingPlanArray {
@@ -74,5 +75,29 @@ public class TrainingPlanArray {
 
     public int getSize() {
         return size;
+    }
+
+    public String generateNextPlanID() {
+        String lastID = trainingPlanArray[size - 1].getPlanID();
+        return Tools.generateNextID("P", lastID);
+    }
+
+    public void addTrainingPlan(TrainingPlan plan) {
+        trainingPlanArray[size] = plan;
+        size++;
+    }
+
+    public void saveToFile() {
+        try {
+            PrintWriter output = new PrintWriter(new File("TrainingPlans.txt"));
+            for (int i = 0; i < size; i++) {
+                TrainingPlan p = trainingPlanArray[i];
+                output.println(p.getPlanID() + "#" + p.getPlanName() + "#" + p.getSplitType()
+                        + "#" + p.getDifficulty() + "#" + p.getNotes());
+            }
+            output.close();
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("Could not write to TrainingPlans.txt");
+        }
     }
 }
