@@ -65,11 +65,80 @@ public class MemberArray {
 public String toString() {
     String result = "";
     for (int i = 0; i < size; i++) {
-        Member m = memberArray[i];
-        result += m.getMemberID() + Tools.addSpaces(m.getMemberID(), 10);
-        result += m.getFullName() + Tools.addSpaces(m.getFullName(), 25);
-        result += m.getFitnessGoal() + Tools.addSpaces(m.getFitnessGoal(), 20);
-        result += (m.isActiveStatus() ? "Active" : "Inactive") + "\n";
+        result += formatMember(memberArray[i]);
+    }
+    return result;
+}
+
+/**
+ * Formats one member as a padded, single display line, shared by
+ * toString() and the search results so both always look identical.
+ * @param m the member to format
+ * @return the formatted line, ending in a newline
+ */
+private String formatMember(Member m) {
+    String line = m.getMemberID() + Tools.addSpaces(m.getMemberID(), 10);
+    line += m.getFullName() + Tools.addSpaces(m.getFullName(), 25);
+    line += m.getFitnessGoal() + Tools.addSpaces(m.getFitnessGoal(), 20);
+    line += (m.isActiveStatus() ? "Active" : "Inactive") + "\n";
+    return line;
+}
+
+/**
+ * Counts how many members are currently active, for the dashboard.
+ * @return the number of members whose activeStatus is true
+ */
+public int countActive() {
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (memberArray[i].isActiveStatus()) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/**
+ * Checks whether a member matches a search term. The term is compared
+ * case-insensitively against both the member ID and the full name, and
+ * matches if it appears anywhere inside either one.
+ * @param m the member to test
+ * @param query the search term, already trimmed and lower-cased
+ * @return true if the member's ID or full name contains the term
+ */
+private boolean matches(Member m, String query) {
+    return m.getMemberID().toLowerCase().contains(query)
+            || m.getFullName().toLowerCase().contains(query);
+}
+
+/**
+ * Finds the first member matching a search term by ID or name.
+ * @param query the text to look for, e.g. "M012" or "zwane"
+ * @return the index of the first match, or -1 if nothing matches
+ */
+public int searchFirstByNameOrID(String query) {
+    String q = query.trim().toLowerCase();
+    for (int i = 0; i < size; i++) {
+        if (matches(memberArray[i], q)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/**
+ * Builds a display list of every member matching a search term by ID or
+ * name, in the same format as the full members list.
+ * @param query the text to look for
+ * @return the matching members as formatted lines, or an empty string if none match
+ */
+public String searchByNameOrID(String query) {
+    String q = query.trim().toLowerCase();
+    String result = "";
+    for (int i = 0; i < size; i++) {
+        if (matches(memberArray[i], q)) {
+            result += formatMember(memberArray[i]);
+        }
     }
     return result;
 }

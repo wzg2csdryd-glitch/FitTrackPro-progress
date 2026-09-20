@@ -79,6 +79,98 @@ public class ProgressArray {
         return size;
     }
 
+    /**
+     * Collects one member's progress records into their own array, sorted
+     * oldest to newest with a bubble sort, so comparisons between "this
+     * entry" and "the previous entry" are always between neighbours.
+     * @param memberID the member whose records are wanted
+     * @return that member's records in date order (length is exactly the count found)
+     */
+    private ProgressRecord[] recordsFor(String memberID) {
+        ProgressRecord[] found = new ProgressRecord[size];
+        int n = 0;
+        for (int i = 0; i < size; i++) {
+            if (progressArray[i].getMemberID().equals(memberID)) {
+                found[n] = progressArray[i];
+                n++;
+            }
+        }
+        found = java.util.Arrays.copyOf(found, n);
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (found[j].getDateRecorded().isAfter(found[j + 1].getDateRecorded())) {
+                    ProgressRecord temp = found[j];
+                    found[j] = found[j + 1];
+                    found[j + 1] = temp;
+                }
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Builds one member's progress history, oldest first. Each entry after
+     * the first shows the weight change compared with the entry before it
+     * (using ProgressRecord.weightChangeFrom), and a summary line at the end
+     * compares the latest entry with the very first.
+     * @param memberID the member whose history is wanted
+     * @return the formatted history and summary
+     */
+    public String historyFor(String memberID) {
+        ProgressRecord[] records = recordsFor(memberID);
+        if (records.length == 0) {
+            return "No progress entries recorded for this member.";
+        }
+        String result = "Date        Weight     Change vs previous     Measurements / notes\n";
+        for (int i = 0; i < records.length; i++) {
+            ProgressRecord r = records[i];
+            String change = (i == 0) ? "first entry"
+                    : String.format(java.util.Locale.US, "%+.1f kg", r.weightChangeFrom(records[i - 1]));
+            String weight = r.getBodyWeight() + " kg";
+            result += r.getDateRecorded() + "  " + weight + Tools.addSpaces(weight, 10)
+                    + change + Tools.addSpaces(change, 22)
+                    + r.getMeasurements() + " | " + r.getNotes() + "\n";
+        }
+        ProgressRecord first = records[0];
+        ProgressRecord latest = records[records.length - 1];
+        result += String.format(java.util.Locale.US,
+                "\nEntries: %d   First: %.1f kg   Latest: %.1f kg   Total change: %+.1f kg\n",
+                records.length, first.getBodyWeight(), latest.getBodyWeight(),
+                latest.weightChangeFrom(first));
+        return result;
+    }
+
+    /**
+     * Builds the progress summary report: for every member, how many
+     * entries they have and how their weight has changed from first to latest.
+     * @param members the member list, used for names
+     * @return the formatted multi-line report
+     */
+    public String summaryReport(MemberArray members) {
+        String report = "PROGRESS SUMMARY REPORT\n\n";
+        report += "ID      Name                      Entries  First     Latest    Change\n";
+        for (int i = 0; i < members.getSize(); i++) {
+            Member m = members.getMember(i);
+            ProgressRecord[] records = recordsFor(m.getMemberID());
+            String start = m.getMemberID() + Tools.addSpaces(m.getMemberID(), 8)
+                    + m.getFullName() + Tools.addSpaces(m.getFullName(), 26);
+            if (records.length == 0) {
+                report += start + "0        no entries\n";
+                continue;
+            }
+            ProgressRecord first = records[0];
+            ProgressRecord latest = records[records.length - 1];
+            String count = String.valueOf(records.length);
+            String firstW = first.getBodyWeight() + " kg";
+            String latestW = latest.getBodyWeight() + " kg";
+            report += start + count + Tools.addSpaces(count, 9)
+                    + firstW + Tools.addSpaces(firstW, 10)
+                    + latestW + Tools.addSpaces(latestW, 10)
+                    + String.format(java.util.Locale.US, "%+.1f kg", latest.weightChangeFrom(first)) + "\n";
+        }
+        return report;
+    }
+
     public String generateNextProgressID() {
         String lastID = progressArray[size - 1].getProgressID();
         return Tools.generateNextID("PR", lastID);

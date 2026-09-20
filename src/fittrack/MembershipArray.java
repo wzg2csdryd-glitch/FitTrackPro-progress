@@ -80,6 +80,127 @@ public class MembershipArray {
         return size;
     }
 
+    /**
+     * Finds a member's current (most recent) membership, defined as the one
+     * with the latest end date. Members can hold several memberships over
+     * time, so only the latest tells us whether they are still covered.
+     * @param memberID the member to look up
+     * @return the index of that member's latest membership, or -1 if they have none
+     */
+    public int findLatestFor(String memberID) {
+        int best = -1;
+        for (int i = 0; i < size; i++) {
+            if (membershipArray[i].getMemberID().equals(memberID)) {
+                if (best == -1 || membershipArray[i].getEndDate().isAfter(membershipArray[best].getEndDate())) {
+                    best = i;
+                }
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Counts active members whose current membership ends within the next
+     * few days (and has not already ended). Used for the dashboard.
+     * @param today the date to measure from
+     * @param days how many days ahead counts as "expiring soon"
+     * @param members the member list, so inactive members can be skipped
+     * @return the number of active members with a membership expiring soon
+     */
+    public int countExpiringWithin(LocalDate today, int days, MemberArray members) {
+        int count = 0;
+        for (int i = 0; i < members.getSize(); i++) {
+            Member m = members.getMember(i);
+            if (!m.isActiveStatus()) {
+                continue;
+            }
+            int pos = findLatestFor(m.getMemberID());
+            if (pos != -1 && !membershipArray[pos].isExpired(today)
+                    && membershipArray[pos].daysRemaining(today) <= days) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Builds the membership expiry report: active members whose current
+     * membership is about to expire, those whose membership has already
+     * ended, and those with no membership on record at all.
+     * @param today the date to measure from
+     * @param days how many days ahead counts as "expiring soon"
+     * @param members the member list, used for names and to skip inactive members
+     * @return the formatted multi-line report
+     */
+    public String expiryReport(LocalDate today, int days, MemberArray members) {
+        String expiring = "";
+        String lapsed = "";
+        String none = "";
+        int expiringCount = 0;
+        int lapsedCount = 0;
+        int noneCount = 0;
+
+        for (int i = 0; i < members.getSize(); i++) {
+            Member m = members.getMember(i);
+            if (!m.isActiveStatus()) {
+                continue;
+            }
+            String who = m.getMemberID() + Tools.addSpaces(m.getMemberID(), 8)
+                    + m.getFullName() + Tools.addSpaces(m.getFullName(), 26);
+            int pos = findLatestFor(m.getMemberID());
+            if (pos == -1) {
+                none += "  " + who + "\n";
+                noneCount++;
+                continue;
+            }
+            Membership ms = membershipArray[pos];
+            String detail = ms.getMembershipType() + Tools.addSpaces(ms.getMembershipType(), 10)
+                    + ms.getEndDate();
+            if (ms.isExpired(today)) {
+                lapsed += "  " + who + detail + "  expired " + (-ms.daysRemaining(today))
+                        + " days ago  (" + ms.getPaymentStatus() + ")\n";
+                lapsedCount++;
+            } else if (ms.daysRemaining(today) <= days) {
+                expiring += "  " + who + detail + "  " + ms.daysRemaining(today)
+                        + " days left  (" + ms.getPaymentStatus() + ")\n";
+                expiringCount++;
+            }
+        }
+
+        String report = "MEMBERSHIP EXPIRY REPORT (as at " + today + ")\n\n";
+        report += "Expiring within " + days + " days (" + expiringCount + "):\n"
+                + (expiring.isEmpty() ? "  None\n" : expiring);
+        report += "\nAlready expired (" + lapsedCount + "):\n"
+                + (lapsed.isEmpty() ? "  None\n" : lapsed);
+        report += "\nNo membership on record (" + noneCount + "):\n"
+                + (none.isEmpty() ? "  None\n" : none);
+        return report;
+    }
+
+    /**
+     * Lists every membership belonging to a member whose name matches a
+     * search term, in the same style as the full memberships list.
+     * @param query the text to look for inside the member's full name
+     * @param members the member list, used to turn member IDs into names
+     * @return the matching memberships as formatted lines, or an empty string if none match
+     */
+    public String searchByMemberName(String query, MemberArray members) {
+        String q = query.trim().toLowerCase();
+        String result = "";
+        for (int i = 0; i < size; i++) {
+            Membership ms = membershipArray[i];
+            int pos = members.searchFirst(ms.getMemberID());
+            String name = (pos == -1) ? ms.getMemberID() : members.getMember(pos).getFullName();
+            if (name.toLowerCase().contains(q)) {
+                result += ms.getMembershipID() + Tools.addSpaces(ms.getMembershipID(), 8);
+                result += name + Tools.addSpaces(name, 26);
+                result += ms.getMembershipType() + Tools.addSpaces(ms.getMembershipType(), 10);
+                result += ms.getEndDate() + " " + ms.getPaymentStatus() + "\n";
+            }
+        }
+        return result;
+    }
+
     public String generateNextMembershipID() {
         String lastID = membershipArray[size - 1].getMembershipID();
         return Tools.generateNextID("MS", lastID);

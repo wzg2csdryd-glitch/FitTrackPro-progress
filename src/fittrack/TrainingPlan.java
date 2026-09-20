@@ -43,6 +43,18 @@ public class TrainingPlan {
         this.notes = notes;
     }
 
+    public void setPlanName(String planName) {
+        this.planName = planName;
+    }
+
+    public void setSplitType(String splitType) {
+        this.splitType = splitType;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
     @Override
     public String toString() {
         return planID + " | " + planName + " | " + splitType + " | " + difficulty;

@@ -27,6 +27,8 @@ public class MainGUI extends javax.swing.JFrame {
             tabMain.setEnabledAt(0, false);  // Members — admin only
             tabMain.setEnabledAt(1, false);  // Memberships — admin only
             tabMain.setEnabledAt(5, false);  // Reports — admin only
+            btnViewExpiring.setVisible(false);  // expiry list — admin only
+            tabMain.setSelectedIndex(2);        // start on Attendance, not on a disabled admin tab
         }
     }
 
@@ -558,9 +560,421 @@ public class MainGUI extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.BorderLayout());
         getContentPane().add(tabMain, java.awt.BorderLayout.CENTER);
 
-        setSize(620, 480);
+        buildExtraFeatures();
+
+        setSize(720, 620);
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    // ------------------------------------------------------------------
+    // Extra features: the remaining functions from specification 1.3
+    // (dashboard, searching, histories, totals, reports, wider editing)
+    // ------------------------------------------------------------------
+    private javax.swing.JLabel lblDashboard;
+    private javax.swing.JButton btnViewExpiring;
+    private javax.swing.JTextField txfSearchMembers;
+    private javax.swing.JComboBox<String> cmbAssignPlan;
+    private javax.swing.JTextField txfSearchMemberships;
+    private javax.swing.JTextArea txaAttendanceHistory;
+    private javax.swing.JTextField txfAttFrom;
+    private javax.swing.JTextField txfAttTo;
+    private javax.swing.JLabel lblAttendanceTotals;
+    private javax.swing.JTextArea txaProgressHistory;
+    private javax.swing.JTextField txfPlanName;
+    private javax.swing.JTextField txfPlanSplit;
+    private javax.swing.JComboBox<String> cmbPlanDifficulty;
+    private javax.swing.JTextArea txaReport;
+    private javax.swing.JTextField txfRepFrom;
+    private javax.swing.JTextField txfRepTo;
+    private javax.swing.JLabel lblReportStatus;
+
+    private javax.swing.JLabel addLabel(javax.swing.JPanel panel, String text, int x, int y, int w, int h) {
+        javax.swing.JLabel lbl = new javax.swing.JLabel(text);
+        lbl.setFont(Theme.LABEL_FONT);
+        panel.add(lbl, new org.netbeans.lib.awtextra.AbsoluteConstraints(x, y, w, h));
+        return lbl;
+    }
+
+    private javax.swing.JButton addButton(javax.swing.JPanel panel, String text, int x, int y, int w, int h,
+            java.awt.event.ActionListener action) {
+        javax.swing.JButton btn = new javax.swing.JButton(text);
+        btn.setFont(Theme.BUTTON_FONT);
+        btn.setBackground(Theme.ACCENT_DARK_BLUE);
+        btn.setForeground(java.awt.Color.WHITE);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btn.addActionListener(action);
+        panel.add(btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(x, y, w, h));
+        return btn;
+    }
+
+    private javax.swing.JTextField addField(javax.swing.JPanel panel, int x, int y, int w, int h) {
+        javax.swing.JTextField field = new javax.swing.JTextField();
+        panel.add(field, new org.netbeans.lib.awtextra.AbsoluteConstraints(x, y, w, h));
+        return field;
+    }
+
+    private void addReadOnlyArea(javax.swing.JPanel panel, javax.swing.JTextArea area, int x, int y, int w, int h) {
+        area.setEditable(false);
+        area.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 12));
+        panel.add(new javax.swing.JScrollPane(area), new org.netbeans.lib.awtextra.AbsoluteConstraints(x, y, w, h));
+    }
+
+    private void buildExtraFeatures() {
+        java.awt.Font mono = new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 12);
+        txaMembers.setFont(mono);
+        txaMemberships.setFont(mono);
+
+        // Dashboard bar across the top of the window (spec 1.3.2)
+        javax.swing.JPanel pnlDashboard = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 6));
+        pnlDashboard.setBackground(Theme.BACKGROUND);
+        lblDashboard = new javax.swing.JLabel(" ");
+        lblDashboard.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 13));
+        lblDashboard.setForeground(Theme.ACCENT_DARK_BLUE);
+        pnlDashboard.add(lblDashboard);
+        btnViewExpiring = new javax.swing.JButton("View expiring memberships");
+        btnViewExpiring.setFont(Theme.BUTTON_FONT);
+        btnViewExpiring.setBackground(Theme.ACCENT_DARK_BLUE);
+        btnViewExpiring.setForeground(java.awt.Color.WHITE);
+        btnViewExpiring.setOpaque(true);
+        btnViewExpiring.setBorderPainted(false);
+        btnViewExpiring.addActionListener(e -> showExpiryDialog());
+        pnlDashboard.add(btnViewExpiring);
+        getContentPane().add(pnlDashboard, java.awt.BorderLayout.NORTH);
+        tabMain.addChangeListener(e -> refreshDashboard());
+
+        // Members tab: search, wider editing, assign plan (spec 1.3.3, 1.3.6)
+        txfMemberName.setEditable(true);
+        txfMemberSurname.setEditable(true);
+        txfMemberHeight.setEditable(true);
+        txfMemberFitnessGoal.setEditable(true);
+        btnSaveContact.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnSaveContact.setToolTipText("Save changes to name, surname, contact, height and fitness goal");
+        jPanel1.add(txfMemberContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 273, 100, 22));
+        jPanel1.add(btnSaveContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 273, 75, 22));
+
+        addLabel(jPanel1, "Search (name or ID):", 575, 10, 125, 18);
+        txfSearchMembers = addField(jPanel1, 575, 30, 115, 22);
+        addButton(jPanel1, "Search", 575, 58, 115, 26, e -> searchMembers());
+        addButton(jPanel1, "Show All", 575, 88, 115, 26, e -> showAllMembers());
+        addLabel(jPanel1, "Assigned plan:", 575, 195, 115, 18);
+        cmbAssignPlan = new javax.swing.JComboBox<>();
+        jPanel1.add(cmbAssignPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(575, 215, 115, 25));
+        addButton(jPanel1, "Assign Plan", 575, 245, 115, 26, e -> assignPlanToMember());
+
+        // Memberships tab: search by member name, expiry warnings (spec 1.3.4)
+        addLabel(jPanel2, "Search (name):", 575, 10, 115, 18);
+        txfSearchMemberships = addField(jPanel2, 575, 30, 115, 22);
+        addButton(jPanel2, "Search", 575, 58, 115, 26, e -> searchMemberships());
+        addButton(jPanel2, "Show All", 575, 88, 115, 26, e -> showAllMemberships());
+        addButton(jPanel2, "Expiry Warnings", 370, 155, 130, 28, e -> showExpiryDialog());
+
+        // Attendance tab: history and totals for a period (spec 1.3.5)
+        addButton(jPanel3, "View History", 270, 37, 110, 25, e -> showAttendanceHistory());
+        addLabel(jPanel3, "Attendance history (newest first):", 10, 165, 250, 18);
+        txaAttendanceHistory = new javax.swing.JTextArea();
+        addReadOnlyArea(jPanel3, txaAttendanceHistory, 10, 185, 420, 235);
+        addLabel(jPanel3, "Totals for a period", 450, 15, 200, 18);
+        addLabel(jPanel3, "From (yyyy-mm-dd):", 450, 40, 130, 18);
+        txfAttFrom = addField(jPanel3, 450, 58, 120, 22);
+        txfAttFrom.setText(java.time.LocalDate.now().minusDays(30).toString());
+        addLabel(jPanel3, "To (yyyy-mm-dd):", 450, 86, 130, 18);
+        txfAttTo = addField(jPanel3, 450, 104, 120, 22);
+        txfAttTo.setText(java.time.LocalDate.now().toString());
+        addButton(jPanel3, "Show Totals", 450, 134, 120, 26, e -> showAttendanceTotals());
+        lblAttendanceTotals = addLabel(jPanel3, " ", 450, 168, 240, 50);
+        lblAttendanceTotals.setFont(Theme.MESSAGE_FONT);
+
+        // Progress tab: history with comparison to previous entries (spec 1.3.7)
+        addButton(jPanel5, "View History", 270, 37, 110, 25, e -> showProgressHistory());
+        addLabel(jPanel5, "Progress history (compared with the previous entry):", 10, 262, 350, 18);
+        txaProgressHistory = new javax.swing.JTextArea();
+        addReadOnlyArea(jPanel5, txaProgressHistory, 10, 282, 680, 190);
+
+        // Training Plans tab: edit every plan detail, not just notes (spec 1.3.6)
+        addLabel(jPanel4, "Plan name:", 300, 98, 80, 18);
+        txfPlanName = addField(jPanel4, 385, 96, 190, 22);
+        addLabel(jPanel4, "Split type:", 300, 126, 80, 18);
+        txfPlanSplit = addField(jPanel4, 385, 124, 190, 22);
+        addLabel(jPanel4, "Difficulty:", 300, 154, 80, 18);
+        cmbPlanDifficulty = new javax.swing.JComboBox<>(new String[] { "Beginner", "Intermediate", "Advanced" });
+        jPanel4.add(cmbPlanDifficulty, new org.netbeans.lib.awtextra.AbsoluteConstraints(385, 150, 190, 24));
+        addButton(jPanel4, "Save Details", 585, 124, 105, 26, e -> savePlanDetails());
+
+        // Reports tab (spec 1.3.8)
+        addLabel(jPanel6, "Attendance period:   From", 10, 17, 150, 18);
+        txfRepFrom = addField(jPanel6, 165, 15, 100, 22);
+        txfRepFrom.setText(java.time.LocalDate.now().minusDays(30).toString());
+        addLabel(jPanel6, "To", 275, 17, 20, 18);
+        txfRepTo = addField(jPanel6, 300, 15, 100, 22);
+        txfRepTo.setText(java.time.LocalDate.now().toString());
+        lblReportStatus = addLabel(jPanel6, " ", 415, 17, 270, 18);
+        lblReportStatus.setFont(Theme.MESSAGE_FONT);
+        addButton(jPanel6, "Attendance Report", 10, 50, 170, 28, e -> runAttendanceReport());
+        addButton(jPanel6, "Membership Expiry Report", 190, 50, 200, 28, e -> runExpiryReport());
+        addButton(jPanel6, "Progress Summary Report", 400, 50, 200, 28, e -> runProgressReport());
+        txaReport = new javax.swing.JTextArea();
+        addReadOnlyArea(jPanel6, txaReport, 10, 90, 680, 330);
+
+        // Help tab
+        javax.swing.JTextArea txaHelp = new javax.swing.JTextArea(HELP_TEXT);
+        txaHelp.setLineWrap(true);
+        txaHelp.setWrapStyleWord(true);
+        addReadOnlyArea(jPanel7, txaHelp, 10, 10, 680, 410);
+        txaHelp.setFont(Theme.LABEL_FONT);
+    }
+
+    private static final String HELP_TEXT =
+            "FITTRACK PRO - HELP\n\n"
+            + "LOGGING ON\n"
+            + "Choose Administrator or Member, type your username and password, then click Log On.\n\n"
+            + "DASHBOARD (top of the window)\n"
+            + "Shows how many members are active and how many memberships expire within 30 days. "
+            + "Administrators can open the full list with 'View expiring memberships'.\n\n"
+            + "MEMBERS (administrators)\n"
+            + "Browse with << < > >>, or search by name or ID and click Show All to reset. "
+            + "Edit the name, surname, contact, height or fitness goal and click Save. "
+            + "Use Assign Plan to change a member's training plan, Activate/Deactivate to change their status, "
+            + "and Add Member / Delete Member to create or remove records.\n\n"
+            + "MEMBERSHIPS (administrators)\n"
+            + "Sort by end date, search by member name, create or renew a membership, "
+            + "update a payment status, or open Expiry Warnings.\n\n"
+            + "ATTENDANCE\n"
+            + "Pick a member and click Check In (a member can only check in once per day). "
+            + "View History lists their check-ins, and Show Totals counts check-ins in a date range.\n\n"
+            + "TRAINING PLANS\n"
+            + "Pick a plan to see its difficulty badge, then edit its name, split type, difficulty or notes. "
+            + "Create Plan adds a new one.\n\n"
+            + "PROGRESS\n"
+            + "Pick a member, enter their weight, measurements and notes, and click Record Progress. "
+            + "View History shows every entry and how each one compares with the one before.\n\n"
+            + "REPORTS (administrators)\n"
+            + "Attendance report for a date range, membership expiry report, and progress summary report.";
+
+    private void refreshDashboard() {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        lblDashboard.setText("Active members: " + Manager.memberArray.countActive() + " of "
+                + Manager.memberArray.getSize() + "     |     Memberships expiring within 30 days: "
+                + Manager.membershipArray.countExpiringWithin(today, 30, Manager.memberArray));
+    }
+
+    private void showExpiryDialog() {
+        final javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Membership Expiry Warnings", true);
+        javax.swing.JTextArea area = new javax.swing.JTextArea(
+                Manager.membershipArray.expiryReport(java.time.LocalDate.now(), 30, Manager.memberArray));
+        area.setEditable(false);
+        area.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 12));
+        area.setCaretPosition(0);
+        dialog.add(new javax.swing.JScrollPane(area), java.awt.BorderLayout.CENTER);
+        javax.swing.JButton btnClose = new javax.swing.JButton("Close");
+        btnClose.addActionListener(e -> dialog.dispose());
+        javax.swing.JPanel bottom = new javax.swing.JPanel();
+        bottom.add(btnClose);
+        dialog.add(bottom, java.awt.BorderLayout.SOUTH);
+        dialog.setSize(720, 460);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    private java.time.LocalDate parseDate(String text) {
+        try {
+            return java.time.LocalDate.parse(text.trim());
+        } catch (java.time.format.DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    private void searchMembers() {
+        String query = txfSearchMembers.getText().trim();
+        if (!Validator.isPresent(query)) {
+            showAllMembers();
+            showMemberError("Type a name or ID to search.");
+            return;
+        }
+        String results = Manager.memberArray.searchByNameOrID(query);
+        if (results.isEmpty()) {
+            txaMembers.setText("No members match \"" + query + "\".");
+            showMemberError("No members found for \"" + query + "\".");
+            return;
+        }
+        txaMembers.setText(results);
+        memberIndex = Manager.memberArray.searchFirstByNameOrID(query);
+        updateMemberFields(memberIndex);
+        lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblEditMemberStatus.setText(results.split("\n").length + " member(s) found. Showing the first match below.");
+    }
+
+    private void showAllMembers() {
+        txaMembers.setText(Manager.memberArray.toString());
+        txfSearchMembers.setText("");
+        lblEditMemberStatus.setText(" ");
+    }
+
+    private void populateAssignPlanCombo() {
+        cmbAssignPlan.removeAllItems();
+        for (int i = 0; i < Manager.trainingPlanArray.getSize(); i++) {
+            cmbAssignPlan.addItem(Manager.trainingPlanArray.getTrainingPlan(i).getPlanName());
+        }
+        if (Manager.memberArray.getSize() > 0) {
+            selectAssignedPlan(Manager.memberArray.getMember(memberIndex));
+        }
+    }
+
+    private void selectAssignedPlan(Member m) {
+        int planPos = Manager.trainingPlanArray.searchFirst(m.getAssignedPlanID());
+        if (planPos >= 0 && planPos < cmbAssignPlan.getItemCount()) {
+            cmbAssignPlan.setSelectedIndex(planPos);
+        }
+    }
+
+    private void assignPlanToMember() {
+        if (Manager.memberArray.getSize() == 0 || cmbAssignPlan.getSelectedIndex() < 0) {
+            return;
+        }
+        Member m = Manager.memberArray.getMember(memberIndex);
+        TrainingPlan p = Manager.trainingPlanArray.getTrainingPlan(cmbAssignPlan.getSelectedIndex());
+        m.setAssignedPlanID(p.getPlanID());
+        Manager.memberArray.saveToFile();
+        lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblEditMemberStatus.setText(m.getFullName() + " is now on " + p.getPlanName() + ".");
+    }
+
+    private void searchMemberships() {
+        String query = txfSearchMemberships.getText().trim();
+        if (!Validator.isPresent(query)) {
+            showAllMemberships();
+            lblPaymentStatusMessage.setForeground(Theme.ERROR_RED);
+            lblPaymentStatusMessage.setText("Type a member name to search.");
+            return;
+        }
+        String results = Manager.membershipArray.searchByMemberName(query, Manager.memberArray);
+        if (results.isEmpty()) {
+            txaMemberships.setText("No memberships match \"" + query + "\".");
+            lblPaymentStatusMessage.setForeground(Theme.ERROR_RED);
+            lblPaymentStatusMessage.setText("No memberships found for \"" + query + "\".");
+            return;
+        }
+        txaMemberships.setText(results);
+        lblPaymentStatusMessage.setForeground(Theme.SUCCESS_GREEN);
+        lblPaymentStatusMessage.setText(results.split("\n").length + " membership(s) found.");
+    }
+
+    private void showAllMemberships() {
+        txaMemberships.setText(Manager.membershipArray.toString());
+        txfSearchMemberships.setText("");
+        lblPaymentStatusMessage.setText(" ");
+    }
+
+    private void showAttendanceHistory() {
+        if (selectedAttendanceMemberIndex == -1) {
+            lblCheckInStatus.setForeground(Theme.ERROR_RED);
+            lblCheckInStatus.setText("Select a member first.");
+            return;
+        }
+        Member m = Manager.memberArray.getMember(selectedAttendanceMemberIndex);
+        txaAttendanceHistory.setText(m.getFullName() + " (" + m.getMemberID() + ")\n"
+                + Manager.attendanceArray.historyFor(m.getMemberID()));
+        txaAttendanceHistory.setCaretPosition(0);
+    }
+
+    private void showAttendanceTotals() {
+        java.time.LocalDate from = parseDate(txfAttFrom.getText());
+        java.time.LocalDate to = parseDate(txfAttTo.getText());
+        if (from == null || to == null) {
+            lblCheckInStatus.setForeground(Theme.ERROR_RED);
+            lblCheckInStatus.setText("Dates must be in yyyy-mm-dd format.");
+            return;
+        }
+        if (to.isBefore(from)) {
+            lblCheckInStatus.setForeground(Theme.ERROR_RED);
+            lblCheckInStatus.setText("The end date cannot be before the start date.");
+            return;
+        }
+        String text = "<html>";
+        if (selectedAttendanceMemberIndex != -1) {
+            Member m = Manager.memberArray.getMember(selectedAttendanceMemberIndex);
+            text += m.getFullName() + ": "
+                    + Manager.attendanceArray.countBetween(m.getMemberID(), from, to) + " check-in(s)<br>";
+        }
+        text += "All members: " + Manager.attendanceArray.countBetween("", from, to) + " check-in(s)</html>";
+        lblAttendanceTotals.setText(text);
+        lblCheckInStatus.setText(" ");
+    }
+
+    private void showProgressHistory() {
+        if (selectedProgressMemberIndex == -1) {
+            lblProgressStatus.setForeground(Theme.ERROR_RED);
+            lblProgressStatus.setText("Select a member first.");
+            return;
+        }
+        Member m = Manager.memberArray.getMember(selectedProgressMemberIndex);
+        txaProgressHistory.setText(m.getFullName() + " (" + m.getMemberID() + ")\n\n"
+                + Manager.progressArray.historyFor(m.getMemberID()));
+        txaProgressHistory.setCaretPosition(0);
+    }
+
+    private void savePlanDetails() {
+        if (selectedTrainingPlanIndex == -1) {
+            lblPlanStatus.setForeground(Theme.ERROR_RED);
+            lblPlanStatus.setText("Select a plan first.");
+            return;
+        }
+        String name = txfPlanName.getText().trim();
+        String split = txfPlanSplit.getText().trim();
+        if (!Validator.isValidName(name)) {
+            lblPlanStatus.setForeground(Theme.ERROR_RED);
+            lblPlanStatus.setText("Plan name is required and cannot contain # or ;");
+            return;
+        }
+        if (!Validator.isValidName(split)) {
+            lblPlanStatus.setForeground(Theme.ERROR_RED);
+            lblPlanStatus.setText("Split type is required and cannot contain # or ;");
+            return;
+        }
+        TrainingPlan p = Manager.trainingPlanArray.getTrainingPlan(selectedTrainingPlanIndex);
+        p.setPlanName(name);
+        p.setSplitType(split);
+        p.setDifficulty((String) cmbPlanDifficulty.getSelectedItem());
+        Manager.trainingPlanArray.saveToFile();
+
+        int keep = selectedTrainingPlanIndex;
+        populateTrainingPlanCombo();
+        cmbTrainingPlan.setSelectedIndex(keep + 1);
+
+        lblPlanStatus.setForeground(Theme.SUCCESS_GREEN);
+        lblPlanStatus.setText("Plan details saved for " + name + ".");
+    }
+
+    private void runAttendanceReport() {
+        java.time.LocalDate from = parseDate(txfRepFrom.getText());
+        java.time.LocalDate to = parseDate(txfRepTo.getText());
+        if (from == null || to == null) {
+            lblReportStatus.setForeground(Theme.ERROR_RED);
+            lblReportStatus.setText("Dates must be in yyyy-mm-dd format.");
+            return;
+        }
+        if (to.isBefore(from)) {
+            lblReportStatus.setForeground(Theme.ERROR_RED);
+            lblReportStatus.setText("The end date cannot be before the start date.");
+            return;
+        }
+        lblReportStatus.setText(" ");
+        txaReport.setText(Manager.attendanceArray.reportBetween(from, to, Manager.memberArray));
+        txaReport.setCaretPosition(0);
+    }
+
+    private void runExpiryReport() {
+        lblReportStatus.setText(" ");
+        txaReport.setText(Manager.membershipArray.expiryReport(java.time.LocalDate.now(), 30, Manager.memberArray));
+        txaReport.setCaretPosition(0);
+    }
+
+    private void runProgressReport() {
+        lblReportStatus.setText(" ");
+        txaReport.setText(Manager.progressArray.summaryReport(Manager.memberArray));
+        txaReport.setCaretPosition(0);
+    }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {
         ((javax.swing.text.DefaultCaret) txaMembers.getCaret()).setUpdatePolicy(javax.swing.text.DefaultCaret.NEVER_UPDATE);
@@ -575,6 +989,7 @@ public class MainGUI extends javax.swing.JFrame {
         populateProgressMemberCombo();
         populateTrainingPlanCombo();
         populateMembershipCombo();
+        refreshDashboard();
     }
 
     private void btnSortMembersActionPerformed(java.awt.event.ActionEvent evt) {
@@ -712,6 +1127,7 @@ public class MainGUI extends javax.swing.JFrame {
 
                 txaMemberships.setText(Manager.membershipArray.toString());
                 populateMembershipCombo();
+                refreshDashboard();
 
                 lblPaymentStatusMessage.setForeground(Theme.SUCCESS_GREEN);
                 lblPaymentStatusMessage.setText("Created membership " + newID + " for " + m.getFullName() + ".");
@@ -772,6 +1188,7 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberBMI.setText(String.valueOf(m.getBmi()));
         txfMemberFitnessGoal.setText(m.getFitnessGoal());
         updateActiveStatusDisplay(m);
+        selectAssignedPlan(m);
     }
 
     private void updateActiveStatusDisplay(Member m) {
@@ -808,6 +1225,7 @@ public class MainGUI extends javax.swing.JFrame {
         Manager.memberArray.saveToFile();
 
         txaMembers.setText(Manager.memberArray.toString());
+        refreshDashboard();
 
         if (Manager.memberArray.getSize() == 0) {
             memberIndex = 0;
@@ -968,6 +1386,7 @@ public class MainGUI extends javax.swing.JFrame {
                 txaMembers.setText(Manager.memberArray.toString());
                 memberIndex = Manager.memberArray.getSize() - 1;
                 updateMemberFields(memberIndex);
+                refreshDashboard();
 
                 lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
                 lblEditMemberStatus.setText("Added new member " + newMember.getFullName() + " (" + newID + ").");
@@ -1003,25 +1422,60 @@ public class MainGUI extends javax.swing.JFrame {
 
         updateActiveStatusDisplay(m);
         txaMembers.setText(Manager.memberArray.toString());
+        refreshDashboard();
 
         lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
         lblEditMemberStatus.setText(m.getFullName() + " is now " + (m.isActiveStatus() ? "Active" : "Inactive") + ".");
     }
 
     private void btnSaveContactActionPerformed(java.awt.event.ActionEvent evt) {
-        String newContact = txfMemberContact.getText();
+        String newName = txfMemberName.getText().trim();
+        String newSurname = txfMemberSurname.getText().trim();
+        String newContact = txfMemberContact.getText().trim();
+        String newGoal = txfMemberFitnessGoal.getText().trim();
+
+        if (!Validator.isValidName(newName) || !Validator.isValidName(newSurname)) {
+            showMemberError("Name and surname are required and cannot contain # or ;");
+            return;
+        }
         if (!Validator.isPresent(newContact) || !Validator.isValidFreeText(newContact)) {
-            lblEditMemberStatus.setForeground(Theme.ERROR_RED);
-            lblEditMemberStatus.setText("Contact details are required and cannot contain # or ;");
+            showMemberError("Contact details are required and cannot contain # or ;");
+            return;
+        }
+        if (!Validator.isPresent(newGoal) || !Validator.isValidFreeText(newGoal)) {
+            showMemberError("Fitness goal is required and cannot contain # or ;");
+            return;
+        }
+        double newHeight;
+        try {
+            newHeight = Double.parseDouble(txfMemberHeight.getText().trim());
+        } catch (NumberFormatException e) {
+            showMemberError("Height must be a number.");
+            return;
+        }
+        if (!Validator.isValidHeight(newHeight)) {
+            showMemberError("Height must be between 1.20 m and 2.30 m.");
             return;
         }
 
         Member m = Manager.memberArray.getMember(memberIndex);
+        m.setName(newName);
+        m.setSurname(newSurname);
         m.setContactDetails(newContact);
+        m.setFitnessGoal(newGoal);
+        m.setHeight(newHeight);
         Manager.memberArray.saveToFile();
 
+        txaMembers.setText(Manager.memberArray.toString());
+        updateMemberFields(memberIndex);
+
         lblEditMemberStatus.setForeground(Theme.SUCCESS_GREEN);
-        lblEditMemberStatus.setText("Contact details saved for " + m.getFullName() + ".");
+        lblEditMemberStatus.setText("Details saved for " + m.getFullName() + ".");
+    }
+
+    private void showMemberError(String message) {
+        lblEditMemberStatus.setForeground(Theme.ERROR_RED);
+        lblEditMemberStatus.setText(message);
     }
 
     private void btnFirstMemberActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1097,6 +1551,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         lblCheckInStatus.setForeground(Theme.SUCCESS_GREEN);
         lblCheckInStatus.setText("Checked in: " + m.getFullName() + " (" + newID + ")");
+        showAttendanceHistory();
     }
 
     private void cmbProgressMemberFocusGained(java.awt.event.FocusEvent evt) {
@@ -1166,6 +1621,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         lblProgressStatus.setForeground(Theme.SUCCESS_GREEN);
         lblProgressStatus.setText("Progress recorded for " + m.getFullName() + " (" + newID + ")");
+        showProgressHistory();
     }
 
     private void cmbTrainingPlanFocusGained(java.awt.event.FocusEvent evt) {
@@ -1178,6 +1634,7 @@ public class MainGUI extends javax.swing.JFrame {
         for (int i = 0; i < Manager.trainingPlanArray.getSize(); i++) {
             cmbTrainingPlan.addItem(Manager.trainingPlanArray.getTrainingPlan(i).getPlanName());
         }
+        populateAssignPlanCombo();
     }
 
     private void cmbTrainingPlanActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1187,6 +1644,8 @@ public class MainGUI extends javax.swing.JFrame {
             lblTrainingPlanID.setText("Plan ID: ---");
             lblPlanBadge.setIcon(null);
             txfPlanNotes.setText("");
+            txfPlanName.setText("");
+            txfPlanSplit.setText("");
             return;
         }
         selectedTrainingPlanIndex = index - 1;
@@ -1194,6 +1653,9 @@ public class MainGUI extends javax.swing.JFrame {
         lblTrainingPlanID.setText("Plan ID: " + p.getPlanID());
         updatePlanBadge(p.getDifficulty());
         txfPlanNotes.setText(p.getNotes());
+        txfPlanName.setText(p.getPlanName());
+        txfPlanSplit.setText(p.getSplitType());
+        cmbPlanDifficulty.setSelectedItem(p.getDifficulty());
     }
 
     private void btnSaveNotesActionPerformed(java.awt.event.ActionEvent evt) {

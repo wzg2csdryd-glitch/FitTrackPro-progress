@@ -89,6 +89,84 @@ public class AttendanceArray {
         return size;
     }
 
+    /**
+     * Builds one member's attendance history, newest check-in first. The
+     * member's records are copied out and bubble-sorted by date and time,
+     * so the order is correct regardless of how the main array is arranged.
+     * @param memberID the member whose history is wanted
+     * @return the formatted history with a count on the first line
+     */
+    public String historyFor(String memberID) {
+        AttendanceRecord[] found = new AttendanceRecord[size];
+        int n = 0;
+        for (int i = 0; i < size; i++) {
+            if (attendanceArray[i].getMemberID().equals(memberID)) {
+                found[n] = attendanceArray[i];
+                n++;
+            }
+        }
+        if (n == 0) {
+            return "No attendance recorded for this member.";
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (found[j].getCheckInDate().atTime(found[j].getCheckInTime())
+                        .isBefore(found[j + 1].getCheckInDate().atTime(found[j + 1].getCheckInTime()))) {
+                    AttendanceRecord temp = found[j];
+                    found[j] = found[j + 1];
+                    found[j + 1] = temp;
+                }
+            }
+        }
+        String result = n + " check-ins (newest first):\n\n";
+        for (int i = 0; i < n; i++) {
+            result += found[i].getCheckInDate() + "  " + found[i].getCheckInTime()
+                    + "   (" + found[i].getAttendanceID() + ")\n";
+        }
+        return result;
+    }
+
+    /**
+     * Counts check-ins that fall between two dates, inclusive.
+     * @param memberID the member to count for, or null/empty to count every member
+     * @param from the first date of the period
+     * @param to the last date of the period
+     * @return the number of matching check-ins
+     */
+    public int countBetween(String memberID, LocalDate from, LocalDate to) {
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            AttendanceRecord a = attendanceArray[i];
+            boolean rightMember = memberID == null || memberID.isEmpty() || a.getMemberID().equals(memberID);
+            if (rightMember && !a.getCheckInDate().isBefore(from) && !a.getCheckInDate().isAfter(to)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Builds the attendance report: how many times each member checked in
+     * during a period, with a grand total.
+     * @param from the first date of the period
+     * @param to the last date of the period
+     * @param members the member list, used for names
+     * @return the formatted multi-line report
+     */
+    public String reportBetween(LocalDate from, LocalDate to, MemberArray members) {
+        String report = "ATTENDANCE REPORT: " + from + " to " + to + "\n\n";
+        int total = 0;
+        for (int i = 0; i < members.getSize(); i++) {
+            Member m = members.getMember(i);
+            int count = countBetween(m.getMemberID(), from, to);
+            total += count;
+            report += m.getMemberID() + Tools.addSpaces(m.getMemberID(), 8)
+                    + m.getFullName() + Tools.addSpaces(m.getFullName(), 26) + count + "\n";
+        }
+        report += "\nTotal check-ins in period: " + total + "\n";
+        return report;
+    }
+
     public String generateNextAttendanceID() {
         String lastID = attendanceArray[size - 1].getAttendanceID();
         return Tools.generateNextID("A", lastID);

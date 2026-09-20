@@ -204,6 +204,48 @@ public String getMembershipList() {
 }
 
 /**
+ * Updates this member's first name.
+ * @param name the new first name
+ */
+public void setName(String name) {
+    this.name = name;
+}
+
+/**
+ * Updates this member's surname.
+ * @param surname the new surname
+ */
+public void setSurname(String surname) {
+    this.surname = surname;
+}
+
+/**
+ * Updates this member's fitness goal.
+ * @param fitnessGoal the new fitness goal
+ */
+public void setFitnessGoal(String fitnessGoal) {
+    this.fitnessGoal = fitnessGoal;
+}
+
+/**
+ * Assigns a different training plan to this member.
+ * @param assignedPlanID the ID of the training plan to assign, e.g. "P003"
+ */
+public void setAssignedPlanID(String assignedPlanID) {
+    this.assignedPlanID = assignedPlanID;
+}
+
+/**
+ * Updates this member's height and immediately recalculates their BMI,
+ * exactly as setCurrentWeight does, so the two can never drift apart.
+ * @param height the new height in metres
+ */
+public void setHeight(double height) {
+    this.height = height;
+    this.bmi = calculateBMI();
+}
+
+/**
  * Links a newly created Membership to this member by appending its ID
  * to membershipList. Handles the ";" separator itself so calling code
  * never has to rebuild the list string by hand.
