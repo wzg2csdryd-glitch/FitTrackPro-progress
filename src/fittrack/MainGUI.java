@@ -669,6 +669,7 @@ public class MainGUI extends javax.swing.JFrame {
         addButton(jPanel2, "Search", 575, 58, 115, 26, e -> searchMemberships());
         addButton(jPanel2, "Show All", 575, 88, 115, 26, e -> showAllMemberships());
         addButton(jPanel2, "Expiry Warnings", 370, 155, 130, 28, e -> showExpiryDialog());
+        addButton(jPanel2, "Send Email", 510, 155, 110, 28, e -> new EmailGUI(this).setVisible(true));
 
         // Attendance tab: history and totals for a period (spec 1.3.5)
         addButton(jPanel3, "View History", 270, 37, 110, 25, e -> showAttendanceHistory());

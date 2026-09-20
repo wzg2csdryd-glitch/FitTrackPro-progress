@@ -202,6 +202,42 @@ public class MembershipArray {
     }
 
     /**
+     * Writes the e-mail a member should receive about their current membership:
+     * when it ends (or ended), how many days that is, and its payment status.
+     * Only the member's latest membership is used, found with findLatestFor.
+     * @param m the member the e-mail is for
+     * @param today the date to measure from
+     * @return a two-element array: the subject line first, the message text second
+     */
+    public String[] reminderFor(Member m, LocalDate today) {
+        int pos = findLatestFor(m.getMemberID());
+        String greeting = "Hi " + m.getName() + ",\n\n";
+        String closing = "\n\nRegards,\nFitTrack Pro";
+        if (pos == -1) {
+            return new String[] {
+                "FitTrack Pro: no membership on record",
+                greeting + "We have no membership on record for you. Please see us at the front desk to sign up." + closing};
+        }
+        Membership ms = membershipArray[pos];
+        int days = ms.daysRemaining(today);
+        String when;
+        String subject;
+        if (ms.isExpired(today)) {
+            when = "ended on " + ms.getEndDate() + " (" + (-days) + " days ago)";
+            subject = "FitTrack Pro: your membership has expired";
+        } else if (days == 0) {
+            when = "ends today (" + ms.getEndDate() + ")";
+            subject = "FitTrack Pro: your membership ends today";
+        } else {
+            when = "ends on " + ms.getEndDate() + " (" + days + " days left)";
+            subject = "FitTrack Pro: your membership ends on " + ms.getEndDate();
+        }
+        String body = greeting + "Your " + ms.getMembershipType() + " membership " + when
+                + ". Payment status: " + ms.getPaymentStatus() + ".\n\nPlease see us at the front desk to renew." + closing;
+        return new String[] {subject, body};
+    }
+
+    /**
      * Works out the next membership ID by scanning the whole array for the
      * highest numeric ID and adding one, so the result does not depend on
      * the order the array is currently sorted in.
