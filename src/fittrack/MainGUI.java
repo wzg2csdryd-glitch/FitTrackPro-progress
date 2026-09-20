@@ -1185,7 +1185,7 @@ public class MainGUI extends javax.swing.JFrame {
         txfMemberJoinDate.setText(m.getJoinDate().toString());
         txfMemberHeight.setText(String.valueOf(m.getHeight()));
         txfMemberCurrentWeight.setText(String.valueOf(m.getCurrentWeight()));
-        txfMemberBMI.setText(String.valueOf(m.getBmi()));
+        txfMemberBMI.setText(String.format(java.util.Locale.US, "%.1f", m.getBmi()));
         txfMemberFitnessGoal.setText(m.getFitnessGoal());
         updateActiveStatusDisplay(m);
         selectAssignedPlan(m);
