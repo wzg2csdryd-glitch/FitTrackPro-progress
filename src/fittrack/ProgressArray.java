@@ -171,9 +171,22 @@ public class ProgressArray {
         return report;
     }
 
+    /**
+     * Works out the next progress ID by scanning the whole array for the
+     * highest numeric ID and adding one, independent of sort order.
+     * @return the next unused progress ID, or "PR001" if there are none
+     */
     public String generateNextProgressID() {
-        String lastID = progressArray[size - 1].getProgressID();
-        return Tools.generateNextID("PR", lastID);
+        if (size == 0) {
+            return "PR001";
+        }
+        String highest = progressArray[0].getProgressID();
+        for (int i = 1; i < size; i++) {
+            if (Tools.idNumber(progressArray[i].getProgressID(), "PR") > Tools.idNumber(highest, "PR")) {
+                highest = progressArray[i].getProgressID();
+            }
+        }
+        return Tools.generateNextID("PR", highest);
     }
 
     public void addRecord(ProgressRecord record) {

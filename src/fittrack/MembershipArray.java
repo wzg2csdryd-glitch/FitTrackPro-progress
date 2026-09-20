@@ -201,9 +201,23 @@ public class MembershipArray {
         return result;
     }
 
+    /**
+     * Works out the next membership ID by scanning the whole array for the
+     * highest numeric ID and adding one, so the result does not depend on
+     * the order the array is currently sorted in.
+     * @return the next unused membership ID, or "MS001" if there are none
+     */
     public String generateNextMembershipID() {
-        String lastID = membershipArray[size - 1].getMembershipID();
-        return Tools.generateNextID("MS", lastID);
+        if (size == 0) {
+            return "MS001";
+        }
+        String highest = membershipArray[0].getMembershipID();
+        for (int i = 1; i < size; i++) {
+            if (Tools.idNumber(membershipArray[i].getMembershipID(), "MS") > Tools.idNumber(highest, "MS")) {
+                highest = membershipArray[i].getMembershipID();
+            }
+        }
+        return Tools.generateNextID("MS", highest);
     }
 
     public void addMembership(Membership membership) {

@@ -190,14 +190,23 @@ public int getSize() {
 }
 
 /**
- * Works out the next member ID to use when adding a new member, by
- * reading the last member currently in the array and incrementing its
- * numeric part (e.g. "M030" produces "M031").
- * @return the next unused member ID
+ * Works out the next member ID to use when adding a new member. It scans
+ * the whole array for the highest numeric ID and adds one (e.g. "M030"
+ * produces "M031"). It deliberately does not look at the last slot: sorting
+ * reorders the array, so the last slot is not necessarily the newest member.
+ * @return the next unused member ID, or "M001" if there are no members
  */
 public String generateNextMemberID() {
-    String lastID = memberArray[size - 1].getMemberID();
-    return Tools.generateNextID("M", lastID);
+    if (size == 0) {
+        return "M001";
+    }
+    String highest = memberArray[0].getMemberID();
+    for (int i = 1; i < size; i++) {
+        if (Tools.idNumber(memberArray[i].getMemberID(), "M") > Tools.idNumber(highest, "M")) {
+            highest = memberArray[i].getMemberID();
+        }
+    }
+    return Tools.generateNextID("M", highest);
 }
 
 /**

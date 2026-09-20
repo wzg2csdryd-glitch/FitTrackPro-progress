@@ -167,9 +167,22 @@ public class AttendanceArray {
         return report;
     }
 
+    /**
+     * Works out the next attendance ID by scanning the whole array for the
+     * highest numeric ID and adding one, independent of sort order.
+     * @return the next unused attendance ID, or "A0001" if there are none
+     */
     public String generateNextAttendanceID() {
-        String lastID = attendanceArray[size - 1].getAttendanceID();
-        return Tools.generateNextID("A", lastID);
+        if (size == 0) {
+            return "A0001";
+        }
+        String highest = attendanceArray[0].getAttendanceID();
+        for (int i = 1; i < size; i++) {
+            if (Tools.idNumber(attendanceArray[i].getAttendanceID(), "A") > Tools.idNumber(highest, "A")) {
+                highest = attendanceArray[i].getAttendanceID();
+            }
+        }
+        return Tools.generateNextID("A", highest);
     }
 
     public void addRecord(AttendanceRecord record) {

@@ -77,9 +77,22 @@ public class TrainingPlanArray {
         return size;
     }
 
+    /**
+     * Works out the next plan ID by scanning the whole array for the
+     * highest numeric ID and adding one, independent of sort order.
+     * @return the next unused plan ID, or "P001" if there are none
+     */
     public String generateNextPlanID() {
-        String lastID = trainingPlanArray[size - 1].getPlanID();
-        return Tools.generateNextID("P", lastID);
+        if (size == 0) {
+            return "P001";
+        }
+        String highest = trainingPlanArray[0].getPlanID();
+        for (int i = 1; i < size; i++) {
+            if (Tools.idNumber(trainingPlanArray[i].getPlanID(), "P") > Tools.idNumber(highest, "P")) {
+                highest = trainingPlanArray[i].getPlanID();
+            }
+        }
+        return Tools.generateNextID("P", highest);
     }
 
     public void addTrainingPlan(TrainingPlan plan) {
