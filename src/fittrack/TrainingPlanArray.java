@@ -95,6 +95,15 @@ public class TrainingPlanArray {
         return Tools.generateNextID("P", highest);
     }
 
+    /**
+     * Tells whether the array has no room left. Callers check this before
+     * addTrainingPlan(), because adding to a full array would crash the program.
+     * @return true if size has reached the length of the underlying array
+     */
+    public boolean isFull() {
+        return size >= trainingPlanArray.length;
+    }
+
     public void addTrainingPlan(TrainingPlan plan) {
         trainingPlanArray[size] = plan;
         size++;

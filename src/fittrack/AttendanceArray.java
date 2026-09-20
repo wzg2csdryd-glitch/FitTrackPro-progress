@@ -185,6 +185,15 @@ public class AttendanceArray {
         return Tools.generateNextID("A", highest);
     }
 
+    /**
+     * Tells whether the array has no room left. Callers check this before
+     * addRecord(), because adding to a full array would crash the program.
+     * @return true if size has reached the length of the underlying array
+     */
+    public boolean isFull() {
+        return size >= attendanceArray.length;
+    }
+
     public void addRecord(AttendanceRecord record) {
         attendanceArray[size] = record;
         size++;

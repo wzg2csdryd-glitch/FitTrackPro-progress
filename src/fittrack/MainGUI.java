@@ -1111,6 +1111,12 @@ public class MainGUI extends javax.swing.JFrame {
                     return;
                 }
 
+                if (Manager.membershipArray.isFull()) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("The membership list is full. No more memberships can be added.");
+                    return;
+                }
+
                 Member m = Manager.memberArray.getMember(selectedMemberIndex - 1);
                 String membershipType = (String) fldType.getSelectedItem();
                 String paymentStatus = (String) fldPaymentStatus.getSelectedItem();
@@ -1373,6 +1379,12 @@ public class MainGUI extends javax.swing.JFrame {
                 }
                 String assignedPlanID = Manager.trainingPlanArray.getTrainingPlan(planIndex - 1).getPlanID();
 
+                if (Manager.memberArray.isFull()) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("The member list is full. No more members can be added.");
+                    return;
+                }
+
                 String newID = Manager.memberArray.generateNextMemberID();
                 double bmi = startingWeight / (height * height);
 
@@ -1542,6 +1554,12 @@ public class MainGUI extends javax.swing.JFrame {
             return;
         }
 
+        if (Manager.attendanceArray.isFull()) {
+            lblCheckInStatus.setForeground(Theme.ERROR_RED);
+            lblCheckInStatus.setText("The attendance list is full. No more check-ins can be recorded.");
+            return;
+        }
+
         java.time.LocalTime now = java.time.LocalTime.now().truncatedTo(java.time.temporal.ChronoUnit.MINUTES);
         String newID = Manager.attendanceArray.generateNextAttendanceID();
         AttendanceRecord record = new AttendanceRecord(newID, m.getMemberID(), today, now);
@@ -1601,6 +1619,12 @@ public class MainGUI extends javax.swing.JFrame {
         if (!Validator.isValidFreeText(txfMeasurements.getText()) || !Validator.isValidFreeText(txfProgressNotes.getText())) {
             lblProgressStatus.setForeground(Theme.ERROR_RED);
             lblProgressStatus.setText("Measurements and notes cannot contain # or ;");
+            return;
+        }
+
+        if (Manager.progressArray.isFull()) {
+            lblProgressStatus.setForeground(Theme.ERROR_RED);
+            lblProgressStatus.setText("The progress list is full. No more entries can be recorded.");
             return;
         }
 
@@ -1746,6 +1770,12 @@ public class MainGUI extends javax.swing.JFrame {
                     return;
                 }
                 String difficulty = (String) fldDifficulty.getSelectedItem();
+
+                if (Manager.trainingPlanArray.isFull()) {
+                    lblDialogStatus.setForeground(Theme.ERROR_RED);
+                    lblDialogStatus.setText("The training plan list is full. No more plans can be added.");
+                    return;
+                }
 
                 String newID = Manager.trainingPlanArray.generateNextPlanID();
                 TrainingPlan newPlan = new TrainingPlan(newID, planName, splitType, difficulty, notes);

@@ -189,6 +189,15 @@ public class ProgressArray {
         return Tools.generateNextID("PR", highest);
     }
 
+    /**
+     * Tells whether the array has no room left. Callers check this before
+     * addRecord(), because adding to a full array would crash the program.
+     * @return true if size has reached the length of the underlying array
+     */
+    public boolean isFull() {
+        return size >= progressArray.length;
+    }
+
     public void addRecord(ProgressRecord record) {
         progressArray[size] = record;
         size++;

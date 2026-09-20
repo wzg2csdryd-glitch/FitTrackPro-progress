@@ -220,6 +220,15 @@ public class MembershipArray {
         return Tools.generateNextID("MS", highest);
     }
 
+    /**
+     * Tells whether the array has no room left. Callers check this before
+     * addMembership(), because adding to a full array would crash the program.
+     * @return true if size has reached the length of the underlying array
+     */
+    public boolean isFull() {
+        return size >= membershipArray.length;
+    }
+
     public void addMembership(Membership membership) {
         membershipArray[size] = membership;
         size++;
